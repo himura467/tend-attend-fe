@@ -5,12 +5,14 @@ interface CreateAccountResponse extends ResponseWithErrorCodes {}
 
 interface LoginResponse extends ResponseWithErrorCodes {}
 
+const instance = axios.create({ baseURL: API_URL });
+
 export const createAccount = async (
   loginId: string,
   loginPassword: string,
   group: number,
 ): Promise<CreateAccountResponse> => {
-  const response: AxiosResponse<CreateAccountResponse> = await axios.post(`${API_URL}/account`, {
+  const response: AxiosResponse<CreateAccountResponse> = await instance.post(`/auth/account`, {
     login_id: loginId,
     login_password: loginPassword,
     group: group,
@@ -19,8 +21,8 @@ export const createAccount = async (
 };
 
 export const login = async (loginId: string, loginPassword: string): Promise<LoginResponse> => {
-  const response: AxiosResponse<LoginResponse> = await axios.post(
-    `${API_URL}/token`,
+  const response: AxiosResponse<LoginResponse> = await instance.post(
+    `/auth/token`,
     new URLSearchParams({
       username: loginId,
       password: loginPassword,
