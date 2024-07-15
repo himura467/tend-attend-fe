@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="ecea753e-99c8-4139-bf30-785f66da840b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/api/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/api/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/api/base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/api/base.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +20,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
       </list>
     </option>
   </component>
@@ -67,7 +70,7 @@
       <option name="presentableId" value="Default" />
       <updated>1720992230757</updated>
       <workItem from="1720992232459" duration="1593000" />
-      <workItem from="1721030961238" duration="2092000" />
+      <workItem from="1721030961238" duration="8157000" />
     </task>
     <servers />
   </component>

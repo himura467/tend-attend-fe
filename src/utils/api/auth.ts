@@ -8,7 +8,7 @@ interface LoginResponse extends ResponseWithErrorCodes {}
 export const createAccount = async (
   loginId: string,
   loginPassword: string,
-  group: string,
+  group: number,
 ): Promise<CreateAccountResponse> => {
   const response: AxiosResponse<CreateAccountResponse> = await axios.post(`${API_URL}/account`, {
     login_id: loginId,
