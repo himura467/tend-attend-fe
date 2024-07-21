@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import SignupFormClient from "@/components/host/signup-form-client";
 
 export default function SignupForm() {
   return (
@@ -15,23 +13,7 @@ export default function SignupForm() {
           </Link>
         </p>
       </div>
-      <form className="space-y-4">
-        <div>
-          <Label htmlFor="name">Name</Label>
-          <Input id="name" type="text" placeholder="Enter your name" required />
-        </div>
-        <div>
-          <Label htmlFor="email">Email address</Label>
-          <Input id="email" type="email" placeholder="name@example.com" required />
-        </div>
-        <div>
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" placeholder="Enter your password" required />
-        </div>
-        <Button type="submit" className="w-full">
-          Create account
-        </Button>
-      </form>
+      <SignupFormClient />
     </div>
   );
 }
