@@ -20,9 +20,9 @@ export default function SignupFormClient() {
 
     try {
       const response = await createHostAccount({
-        email,
-        password,
         host_name: name,
+        password: password,
+        email: email,
       });
 
       if (response.error_codes.length > 0) {
