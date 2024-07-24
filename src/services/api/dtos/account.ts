@@ -1,7 +1,7 @@
 export interface CreateHostAccountRequest {
-  email: string;
-  password: string;
   host_name: string;
+  password: string;
+  email: string;
 }
 
 export interface CreateHostAccountResponse {
