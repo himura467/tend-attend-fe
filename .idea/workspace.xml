@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ecea753e-99c8-4139-bf30-785f66da840b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/host/signin-form-client.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/host/signin-form-client.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/host/signup-form-client.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/host/signup-form-client.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +23,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -39,17 +39,20 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "JavaScript Debug.Main.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "develop",
+    "git-widget-placeholder": "feature/refactor-page",
     "last_opened_file_path": "/Users/himura/.nodenv/shims/node",
     "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "/Users/himura/.nodenv/shims/node",
     "nodejs_package_manager_path": "pnpm",
-    "prettierjs.PrettierConfiguration.Package": "/Users/himura/Desktop/Nextjs/tend-attend_nextjs/node_modules/prettier",
-    "settings.editor.selected.configurable": "settings.nodejs",
+    "prettierjs.PrettierConfiguration.Package": "/Users/himura/Desktop/TendAttend/tend-attend_nextjs/node_modules/prettier",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "/Users/himura/Desktop/TendAttend/tend-attend_nextjs/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
