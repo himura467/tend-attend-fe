@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "@/app/globals.css";
-import { ReactNode } from "react";
+import React from "react";
 
 const fontHeading = Inter({
   subsets: ["latin"],
@@ -18,7 +18,7 @@ const fontBody = Inter({
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: ReactNode;
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">

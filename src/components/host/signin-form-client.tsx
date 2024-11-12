@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -10,12 +10,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { createAuthToken } from "@/services/api/host";
 
 export default function SigninFormClient() {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [name, setName] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -30,7 +30,7 @@ export default function SigninFormClient() {
       } else {
         router.push("/host");
       }
-    } catch (error) {
+    } catch {
       setError("An unexpected error occurred. Please try again later.");
     }
   };
