@@ -1,16 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { createAuthToken } from "@/services/api/host";
+import { createHostAccount } from "@/services/api/hosts";
 
-export default function SigninFormClient() {
+export default function SignUpFormClient() {
   const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
   const router = useRouter();
@@ -20,14 +19,19 @@ export default function SigninFormClient() {
     setError("");
 
     try {
-      await createAuthToken({
-        username: JSON.stringify({ host_name: name, group: "host" }),
+      const response = await createHostAccount({
+        host_name: name,
         password: password,
+        email: email,
       });
 
-      router.push("/host");
+      if (response.error_codes.length > 0) {
+        setError("An error occurred. Please try again.");
+      } else {
+        router.push("/hosts/signin");
+      }
     } catch {
-      setError("An error occurred. Please try again.");
+      setError("An unexpected error occurred. Please try again later.");
     }
   };
 
@@ -45,6 +49,17 @@ export default function SigninFormClient() {
         />
       </div>
       <div>
+        <Label htmlFor="email">Email address</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="name@example.com"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <div>
         <Label htmlFor="password">Password</Label>
         <Input
           id="password"
@@ -55,20 +70,9 @@ export default function SigninFormClient() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <Checkbox id="remember" />
-          <Label htmlFor="remember" className="ml-2 block text-sm text-muted-foreground">
-            Remember me
-          </Label>
-        </div>
-        <Link href="/host/forgotpassword" className="text-sm font-medium text-primary hover:text-primary/80">
-          Forgot your password?
-        </Link>
-      </div>
       {error && <p className="text-red-500">{error}</p>}
       <Button type="submit" className="w-full">
-        Sign in
+        Create account
       </Button>
     </form>
   );
