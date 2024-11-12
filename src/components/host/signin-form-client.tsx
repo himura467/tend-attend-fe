@@ -20,18 +20,14 @@ export default function SigninFormClient() {
     setError("");
 
     try {
-      const response = await createAuthToken({
+      await createAuthToken({
         username: JSON.stringify({ host_name: name, group: "host" }),
         password: password,
       });
 
-      if (response.error_codes.length > 0) {
-        setError("An error occurred. Please try again.");
-      } else {
-        router.push("/host");
-      }
+      router.push("/host");
     } catch {
-      setError("An unexpected error occurred. Please try again later.");
+      setError("An error occurred. Please try again.");
     }
   };
 
