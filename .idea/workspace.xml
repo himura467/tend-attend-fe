@@ -6,6 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ecea753e-99c8-4139-bf30-785f66da840b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/host/signin-form-client.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/host/signin-form-client.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/host/signup-form-client.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/host/signup-form-client.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +40,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/node-env",
+    "git-widget-placeholder": "develop",
     "last_opened_file_path": "/Users/himura/.nodenv/shims/node",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -88,6 +91,7 @@
       <workItem from="1730518485354" duration="425000" />
       <workItem from="1731227157471" duration="17000" />
       <workItem from="1731227179407" duration="4701000" />
+      <workItem from="1731396187305" duration="841000" />
     </task>
     <servers />
   </component>

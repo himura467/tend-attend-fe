@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -8,13 +8,13 @@ import { Button } from "@/components/ui/button";
 import { createHostAccount } from "@/services/api/host";
 
 export default function SignupFormClient() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -30,7 +30,7 @@ export default function SignupFormClient() {
       } else {
         router.push("/host/signin");
       }
-    } catch (error) {
+    } catch {
       setError("An unexpected error occurred. Please try again later.");
     }
   };
