@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ecea753e-99c8-4139-bf30-785f66da840b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/host/signin/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/hosts/signin/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/host/signup/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/hosts/signup/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/host/signin-form-client.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/hosts/signin-form-client.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/host/signin-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/hosts/signin-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/host/signup-form-client.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/hosts/signup-form-client.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/host/signup-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/hosts/signup-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/api/host.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/api/hosts.ts" afterDir="false" />
-    </list>
+    <list default="true" id="ecea753e-99c8-4139-bf30-785f66da840b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -48,7 +39,7 @@
   "keyToString": {
     "JavaScript Debug.Main.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "develop",
+    "git-widget-placeholder": "feature/event-create",
     "last_opened_file_path": "/Users/himura/.nodenv/shims/node",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
