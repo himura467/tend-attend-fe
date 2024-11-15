@@ -66,7 +66,7 @@ export default function SignInFormClient() {
           Forgot your password?
         </Link>
       </div>
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p>{error}</p>}
       <Button type="submit" className="w-full">
         Sign in
       </Button>
