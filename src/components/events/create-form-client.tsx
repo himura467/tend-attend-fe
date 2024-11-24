@@ -51,7 +51,7 @@ export default function CreateEventFormClient() {
   const [events, setEvents] = useState<Event[]>(sampleEvents);
   const [startDate, setStartDate] = useState<Date>(getCurrentYmdDate(new Date()));
   const [endDate, setEndDate] = useState<Date>(addHours(getCurrentYmdDate(new Date()), 1));
-  const [isAllDay, setIsAllDay] = useState<boolean>(false);
+  const [isAllDay, setIsAllDay] = useState<boolean>(true);
   const [recurrence, setRecurrence] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
