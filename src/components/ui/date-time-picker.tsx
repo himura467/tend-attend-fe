@@ -1,4 +1,4 @@
-import { addHours, format } from "date-fns";
+import { addDays, format } from "date-fns";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { CalendarIcon, Clock, Repeat } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getCurrentYmdDate } from "@/lib/utils/date";
 
 type RecurrenceOption = {
   label: string;
@@ -40,6 +41,22 @@ const recurrenceOptions: RecurrenceOption[] = [
   },
 ];
 
+type TimezoneOption = {
+  label: string;
+  value: string;
+};
+
+const timezoneOptions: TimezoneOption[] = [
+  {
+    label: "UTC",
+    value: "UTC",
+  },
+  {
+    label: "Tokyo",
+    value: "Asia/Tokyo",
+  },
+];
+
 interface DateTimePickerProps {
   startDate: Date;
   endDate: Date;
@@ -49,17 +66,21 @@ interface DateTimePickerProps {
   onIsAllDayChange: (isAllDay: boolean) => void;
   recurrence?: string | null;
   onRecurrenceChange: (recurrence: string | null) => void;
+  timezone: string;
+  onTimezoneChange: (timezone: string) => void;
 }
 
 export default function DateTimePicker({
-  startDate = new Date(),
-  endDate = addHours(new Date(), 1),
+  startDate = getCurrentYmdDate(new Date()),
+  endDate = addDays(getCurrentYmdDate(new Date()), 1),
   onStartDateChange,
   onEndDateChange,
   isAllDay,
   onIsAllDayChange,
   recurrence,
   onRecurrenceChange,
+  timezone = Intl.DateTimeFormat().resolvedOptions().timeZone,
+  onTimezoneChange,
 }: DateTimePickerProps) {
   const timeOptions = React.useMemo(() => {
     const options = [];
@@ -80,7 +101,7 @@ export default function DateTimePicker({
 
   const getRecurrenceLabel = () => {
     if (!recurrence) return null;
-    const option = recurrenceOptions.find((opt) => opt.value === recurrence);
+    const option = recurrenceOptions.find((r) => r.value === recurrence);
     return option && option.value != "" ? option.label : null;
   };
 
@@ -202,16 +223,6 @@ export default function DateTimePicker({
             All-day
           </label>
         </div>
-        <Select defaultValue="UTC">
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select timezone" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="UTC">UTC</SelectItem>
-            <SelectItem value="EST">Eastern Time</SelectItem>
-            <SelectItem value="PST">Pacific Time</SelectItem>
-          </SelectContent>
-        </Select>
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -224,24 +235,38 @@ export default function DateTimePicker({
           </PopoverTrigger>
           <PopoverContent className="w-[240px] p-0" align="start">
             <div className="rounded-md bg-popover p-1">
-              {recurrenceOptions.map((option) => (
+              {recurrenceOptions.map((r) => (
                 <Button
-                  key={option.value}
+                  key={r.value}
                   variant="ghost"
                   className={cn(
                     "w-full justify-start font-normal",
-                    recurrence === option.value && "bg-accent text-accent-foreground",
+                    recurrence === r.value && "bg-accent text-accent-foreground",
                   )}
-                  onClick={() => onRecurrenceChange(option.value)}
+                  onClick={() => onRecurrenceChange(r.value)}
                 >
                   <span className="flex flex-col items-start">
-                    <span>{option.label}</span>
+                    <span>{r.label}</span>
                   </span>
                 </Button>
               ))}
             </div>
           </PopoverContent>
         </Popover>
+        {!isAllDay && (
+          <Select value={timezone} onValueChange={onTimezoneChange}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select timezone" />
+            </SelectTrigger>
+            <SelectContent>
+              {timezoneOptions.map((tz) => (
+                <SelectItem key={tz.label} value={tz.value}>
+                  {tz.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
     </div>
   );

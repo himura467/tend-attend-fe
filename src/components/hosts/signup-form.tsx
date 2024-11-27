@@ -8,7 +8,7 @@ export default function SignUpForm() {
         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Create your Host account</h1>
         <p className="mt-2 text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/src/app/hosts/signin" className="font-medium text-primary hover:underline">
+          <Link href="/hosts/signin" className="font-medium text-primary hover:underline">
             Sign in
           </Link>
         </p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,9 +10,20 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/hooks/use-toast";
-import { YmdDate, YmdHm15Date, parseYmdDate, parseYmdHm15Date, getCurrentYmdDate } from "@/utils/date";
+import {
+  toISOStringWithTimezone,
+  YmdDate,
+  YmdHm15Date,
+  parseYmdDate,
+  parseYmdHm15Date,
+  isYmdDate,
+  getCurrentYmdDate,
+  applyTimezone,
+} from "@/lib/utils/date";
 import DateTimePicker from "@/components/ui/date-time-picker";
-import { startOfDay, addHours } from "date-fns";
+import { startOfDay, endOfDay, addDays } from "date-fns";
+import { createEvent } from "@/services/api/events";
+import { useRouter } from "next/navigation";
 
 interface Event {
   summary: string;
@@ -20,24 +31,8 @@ interface Event {
   start: YmdDate | YmdHm15Date;
   end: YmdDate | YmdHm15Date;
   recurrence: string | null;
+  timezone: string;
 }
-
-const sampleEvents: Event[] = [
-  {
-    summary: "Team Meeting",
-    location: "Conference Room A",
-    start: parseYmdDate(new Date("2000-01-01T00:00:00")),
-    end: parseYmdDate(new Date("2000-02-01T00:00:00")),
-    recurrence: "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR",
-  },
-  {
-    summary: "Yoga Class",
-    location: "Gym",
-    start: parseYmdHm15Date(new Date("2000-01-01T18:00:00")),
-    end: parseYmdHm15Date(new Date("2000-01-01T19:00:00")),
-    recurrence: null,
-  },
-];
 
 const formSchema = z.object({
   summary: z.string({
@@ -47,12 +42,15 @@ const formSchema = z.object({
 });
 
 export default function CreateEventFormClient() {
+  const router = useRouter();
   const { toast } = useToast();
-  const [events, setEvents] = useState<Event[]>(sampleEvents);
-  const [startDate, setStartDate] = useState<Date>(getCurrentYmdDate(new Date()));
-  const [endDate, setEndDate] = useState<Date>(addHours(getCurrentYmdDate(new Date()), 1));
-  const [isAllDay, setIsAllDay] = useState<boolean>(true);
-  const [recurrence, setRecurrence] = useState<string | null>(null);
+  const [events, setEvents] = React.useState<Event[]>([]);
+  const [startDate, setStartDate] = React.useState<Date>(getCurrentYmdDate(new Date()));
+  const [endDate, setEndDate] = React.useState<Date>(addDays(getCurrentYmdDate(new Date()), 1));
+  const [isAllDay, setIsAllDay] = React.useState<boolean>(true);
+  const [recurrence, setRecurrence] = React.useState<string | null>(null);
+  const [timezone, setTimezone] = React.useState<string>(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const [error, setError] = React.useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,13 +60,35 @@ export default function CreateEventFormClient() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setError("");
+
+    try {
+      const response = await createEvent({
+        summary: values.summary,
+        location: values.location,
+        start: toISOStringWithTimezone(startDate, timezone),
+        end: toISOStringWithTimezone(endDate, timezone),
+        recurrence_list: recurrence ? [recurrence] : [],
+        is_all_day: isAllDay,
+      });
+
+      if (response.error_codes.length > 0) {
+        setError("An error occurred. Please try again.");
+      } else {
+        router.push("/");
+      }
+    } catch {
+      setError("An unexpected error occurred. Please try again later.");
+    }
+
     const newEvent: Event = {
       summary: values.summary,
       location: values.location,
       start: isAllDay ? parseYmdDate(startDate) : parseYmdHm15Date(startDate),
       end: isAllDay ? parseYmdDate(endDate) : parseYmdHm15Date(endDate),
       recurrence: recurrence,
+      timezone: timezone,
     };
     setEvents([...events, newEvent]);
     toast({
@@ -77,15 +97,16 @@ export default function CreateEventFormClient() {
     });
     form.reset();
     setStartDate(getCurrentYmdDate(new Date()));
-    setEndDate(addHours(getCurrentYmdDate(new Date()), 1));
+    setEndDate(addDays(getCurrentYmdDate(new Date()), 1));
     setIsAllDay(true);
     setRecurrence(null);
+    setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
   }
 
   const handleStartDateChange = (date: Date) => {
     setStartDate(date);
     if (date > endDate) {
-      setEndDate(addHours(date, 1));
+      setEndDate(addDays(date, 1));
     }
   };
 
@@ -111,9 +132,9 @@ export default function CreateEventFormClient() {
           initialView="dayGridMonth"
           events={events.map((event) => ({
             title: event.summary,
-            start: event.start,
-            end: event.end,
-            allDay: isAllDay,
+            start: isYmdDate(event.start) ? event.start : applyTimezone(event.start, event.timezone),
+            end: isYmdDate(event.end) ? endOfDay(event.end) : applyTimezone(event.end, event.timezone),
+            allDay: isYmdDate(event.start),
           }))}
         />
       </div>
@@ -159,8 +180,11 @@ export default function CreateEventFormClient() {
                 onIsAllDayChange={handleIsAllDayChange}
                 recurrence={recurrence}
                 onRecurrenceChange={setRecurrence}
+                timezone={timezone}
+                onTimezoneChange={setTimezone}
               />
             </div>
+            {error && <p>{error}</p>}
             <Button type="submit">Create Event</Button>
           </form>
         </Form>
