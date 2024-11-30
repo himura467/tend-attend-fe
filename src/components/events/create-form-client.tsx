@@ -22,7 +22,7 @@ import {
 } from "@/lib/utils/date";
 import DateTimePicker from "@/components/ui/date-time-picker";
 import { startOfDay, endOfDay, addDays } from "date-fns";
-import { createEvent } from "@/services/api/events";
+import { createEvent } from "@/lib/api/events";
 import { useRouter } from "next/navigation";
 
 interface Event {

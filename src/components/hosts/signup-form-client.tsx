@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createHostAccount } from "@/services/api/hosts";
+import { createHostAccount } from "@/lib/api/hosts";
 
 export default function SignUpFormClient() {
   const [name, setName] = React.useState("");

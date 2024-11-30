@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { createAuthToken } from "@/services/api/hosts";
+import { createAuthToken } from "@/lib/api/hosts";
 
 export default function SignInFormClient() {
   const [name, setName] = React.useState("");

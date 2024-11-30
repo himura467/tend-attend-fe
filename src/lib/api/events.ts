@@ -1,5 +1,5 @@
-import axiosInstance from "@/services/api/axios-instance";
-import { CreateEventRequest, CreateEventResponse } from "@/services/api/dtos/event";
+import axiosInstance from "@/lib/api/axios-instance";
+import { CreateEventRequest, CreateEventResponse } from "@/lib/api/dtos/event";
 
 export const createEvent = async (data: CreateEventRequest): Promise<CreateEventResponse> => {
   const response = await axiosInstance.post<CreateEventResponse>("/events/", data, {

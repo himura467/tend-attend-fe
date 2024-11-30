@@ -1,6 +1,6 @@
-import axiosInstance from "@/services/api/axios-instance";
-import { CreateHostAccountRequest, CreateHostAccountResponse } from "@/services/api/dtos/account";
-import { OAuth2PasswordRequestForm, AuthToken } from "@/services/api/dtos/auth";
+import axiosInstance from "@/lib/api/axios-instance";
+import { CreateHostAccountRequest, CreateHostAccountResponse } from "@/lib/api/dtos/account";
+import { OAuth2PasswordRequestForm, AuthToken } from "@/lib/api/dtos/auth";
 
 export const createHostAccount = async (data: CreateHostAccountRequest): Promise<CreateHostAccountResponse> => {
   const response = await axiosInstance.post<CreateHostAccountResponse>("/accounts/hosts", data);
