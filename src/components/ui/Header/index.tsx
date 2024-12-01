@@ -1,6 +1,7 @@
 import Link from "next/link";
+import React from "react";
 
-export default function Header() {
+export const Header = (): React.JSX.Element => {
   return (
     <header className="flex items-center justify-between border-b px-6 py-4">
       <nav className="hidden items-center gap-6 md:flex">
@@ -16,4 +17,4 @@ export default function Header() {
       </nav>
     </header>
   );
-}
+};

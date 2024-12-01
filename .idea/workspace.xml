@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ecea753e-99c8-4139-bf30-785f66da840b" name="Changes" comment="" />
+    <list default="true" id="ecea753e-99c8-4139-bf30-785f66da840b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,7 +41,8 @@
   "keyToString": {
     "JavaScript Debug.Main.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/event-create",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "feature/project-structure",
     "last_opened_file_path": "/Users/himura/.nodenv/shims/node",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
@@ -60,15 +63,17 @@
       <recent name="$PROJECT_DIR$/src/app/host/signin" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/app" />
-      <recent name="$PROJECT_DIR$/src/app/host/signup" />
-      <recent name="$PROJECT_DIR$/src/app/host" />
+      <recent name="$PROJECT_DIR$/src/components/organisms/specific/hosts/signin/SignInForm" />
+      <recent name="$PROJECT_DIR$/src/components/organisms/specific/hosts/signup/SignUpForm" />
+      <recent name="$PROJECT_DIR$/src/components/organisms/specific/hosts/signup" />
+      <recent name="$PROJECT_DIR$/src/components/ui/Footer" />
+      <recent name="$PROJECT_DIR$/src/components/ui/Header" />
     </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.23726.96" />
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-WS-243.21565.180" />
       </set>
     </attachedChunks>
   </component>
@@ -93,6 +98,7 @@
       <workItem from="1731227157471" duration="17000" />
       <workItem from="1731227179407" duration="4701000" />
       <workItem from="1731396187305" duration="841000" />
+      <workItem from="1732937077945" duration="45667000" />
     </task>
     <servers />
   </component>

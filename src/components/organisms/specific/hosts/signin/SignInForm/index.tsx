@@ -2,20 +2,25 @@
 
 import Link from "next/link";
 import React from "react";
-import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { createAuthToken } from "@/services/api/hosts";
+import { createAuthToken } from "@/lib/api/hosts";
+import { routerPush } from "@/lib/utils/router";
+import { useRouter } from "next/navigation";
 
-export default function SignInFormClient() {
+interface SignInFormProps {
+  location: string;
+}
+
+export const SignInForm = ({ location }: SignInFormProps): React.JSX.Element => {
+  const router = useRouter();
   const [name, setName] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
-  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setError("");
 
@@ -25,7 +30,7 @@ export default function SignInFormClient() {
         password: password,
       });
 
-      router.push("/hosts");
+      routerPush({ href: location }, router);
     } catch {
       setError("An error occurred. Please try again.");
     }
@@ -62,7 +67,7 @@ export default function SignInFormClient() {
             Remember me
           </Label>
         </div>
-        <Link href="/src/app/hosts/forgotpassword" className="text-sm font-medium text-primary hover:text-primary/80">
+        <Link href="/hosts/forgot-password" className="text-sm font-medium text-primary hover:text-primary/80">
           Forgot your password?
         </Link>
       </div>
@@ -72,4 +77,4 @@ export default function SignInFormClient() {
       </Button>
     </form>
   );
-}
+};

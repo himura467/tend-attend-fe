@@ -9,7 +9,8 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 import {
   toISOStringWithTimezone,
   YmdDate,
@@ -20,10 +21,10 @@ import {
   getCurrentYmdDate,
   applyTimezone,
 } from "@/lib/utils/date";
-import DateTimePicker from "@/components/ui/date-time-picker";
+import { DateTimePicker } from "@/components/organisms/shared/events/DateTimePicker";
 import { startOfDay, endOfDay, addDays } from "date-fns";
-import { createEvent } from "@/services/api/events";
-import { useRouter } from "next/navigation";
+import { createEvent } from "@/lib/api/events";
+import { routerPush } from "@/lib/utils/router";
 
 interface Event {
   summary: string;
@@ -41,7 +42,11 @@ const formSchema = z.object({
   location: z.string().nullable(),
 });
 
-export default function CreateEventFormClient() {
+interface CreateEventFormProps {
+  location: string;
+}
+
+export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.Element => {
   const router = useRouter();
   const { toast } = useToast();
   const [events, setEvents] = React.useState<Event[]>([]);
@@ -60,7 +65,7 @@ export default function CreateEventFormClient() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>): Promise<void> => {
     setError("");
 
     try {
@@ -76,7 +81,7 @@ export default function CreateEventFormClient() {
       if (response.error_codes.length > 0) {
         setError("An error occurred. Please try again.");
       } else {
-        router.push("/");
+        routerPush({ href: location }, router);
       }
     } catch {
       setError("An unexpected error occurred. Please try again later.");
@@ -101,22 +106,22 @@ export default function CreateEventFormClient() {
     setIsAllDay(true);
     setRecurrence(null);
     setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
-  }
+  };
 
-  const handleStartDateChange = (date: Date) => {
+  const handleStartDateChange = (date: Date): void => {
     setStartDate(date);
     if (date > endDate) {
       setEndDate(addDays(date, 1));
     }
   };
 
-  const handleEndDateChange = (date: Date) => {
+  const handleEndDateChange = (date: Date): void => {
     if (date > startDate) {
       setEndDate(date);
     }
   };
 
-  const handleIsAllDayChange = (allDay: boolean) => {
+  const handleIsAllDayChange = (allDay: boolean): void => {
     setIsAllDay(allDay);
     if (allDay) {
       setStartDate(startOfDay(startDate));
@@ -191,4 +196,4 @@ export default function CreateEventFormClient() {
       </div>
     </div>
   );
-}
+};
