@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "@/app/globals.css";
 import React from "react";
+import { NextPage } from "next";
 
 const fontHeading = Inter({
   subsets: ["latin"],
@@ -15,14 +16,16 @@ const fontBody = Inter({
   variable: "--font-body",
 });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+interface RootLayoutProps {
   children: React.ReactNode;
-}>) {
+}
+
+const RootLayout: NextPage<RootLayoutProps> = ({ children }): React.JSX.Element => {
   return (
     <html lang="en">
       <body className={cn("antialiased", fontHeading.variable, fontBody.variable)}>{children}</body>
     </html>
   );
-}
+};
+
+export default RootLayout;

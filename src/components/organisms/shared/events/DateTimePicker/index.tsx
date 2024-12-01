@@ -70,7 +70,7 @@ interface DateTimePickerProps {
   onTimezoneChange: (timezone: string) => void;
 }
 
-export default function DateTimePicker({
+export const DateTimePicker = ({
   startDate = getCurrentYmdDate(new Date()),
   endDate = addDays(getCurrentYmdDate(new Date()), 1),
   onStartDateChange,
@@ -81,7 +81,7 @@ export default function DateTimePicker({
   onRecurrenceChange,
   timezone = Intl.DateTimeFormat().resolvedOptions().timeZone,
   onTimezoneChange,
-}: DateTimePickerProps) {
+}: DateTimePickerProps): React.JSX.Element => {
   const timeOptions = React.useMemo(() => {
     const options = [];
     for (let hour = 0; hour < 24; hour++) {
@@ -93,13 +93,13 @@ export default function DateTimePicker({
     return options;
   }, []);
 
-  const getDuration = () => {
+  const getDuration = (): string => {
     const diff = endDate.getTime() - startDate.getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
     return `${hours}h`;
   };
 
-  const getRecurrenceLabel = () => {
+  const getRecurrenceLabel = (): string | null => {
     if (!recurrence) return null;
     const option = recurrenceOptions.find((r) => r.value === recurrence);
     return option && option.value != "" ? option.label : null;
@@ -270,4 +270,4 @@ export default function DateTimePicker({
       </div>
     </div>
   );
-}
+};

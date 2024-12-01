@@ -1,20 +1,22 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createHostAccount } from "@/lib/api/hosts";
+import { rr } from "@/lib/utils/reverse-router";
+import { routerPush } from "@/lib/utils/router";
+import { useRouter } from "next/navigation";
 
-export default function SignUpFormClient() {
+export const SignUpForm = (): React.JSX.Element => {
+  const router = useRouter();
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
-  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setError("");
 
@@ -28,7 +30,7 @@ export default function SignUpFormClient() {
       if (response.error_codes.length > 0) {
         setError("An error occurred. Please try again.");
       } else {
-        router.push("/hosts/signin");
+        routerPush(rr.hosts.signin.index(), router);
       }
     } catch {
       setError("An unexpected error occurred. Please try again later.");
@@ -76,4 +78,4 @@ export default function SignUpFormClient() {
       </Button>
     </form>
   );
-}
+};
