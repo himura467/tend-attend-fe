@@ -63,9 +63,11 @@
       <recent name="$PROJECT_DIR$/src/app/host/signin" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/app" />
-      <recent name="$PROJECT_DIR$/src/app/host/signup" />
-      <recent name="$PROJECT_DIR$/src/app/host" />
+      <recent name="$PROJECT_DIR$/src/components/organisms/specific/hosts/signin/SignInForm" />
+      <recent name="$PROJECT_DIR$/src/components/organisms/specific/hosts/signup/SignUpForm" />
+      <recent name="$PROJECT_DIR$/src/components/organisms/specific/hosts/signup" />
+      <recent name="$PROJECT_DIR$/src/components/ui/Footer" />
+      <recent name="$PROJECT_DIR$/src/components/ui/Header" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -96,7 +98,7 @@
       <workItem from="1731227157471" duration="17000" />
       <workItem from="1731227179407" duration="4701000" />
       <workItem from="1731396187305" duration="841000" />
-      <workItem from="1732937077945" duration="3584000" />
+      <workItem from="1732937077945" duration="45667000" />
     </task>
     <servers />
   </component>
