@@ -70,12 +70,14 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
 
     try {
       const response = await createEvent({
-        summary: values.summary,
-        location: values.location,
-        start: toISOStringWithTimezone(startDate, timezone),
-        end: toISOStringWithTimezone(endDate, timezone),
-        recurrence_list: recurrence ? [recurrence] : [],
-        is_all_day: isAllDay,
+        event: {
+          summary: values.summary,
+          location: values.location,
+          start: toISOStringWithTimezone(startDate, timezone),
+          end: toISOStringWithTimezone(endDate, timezone),
+          recurrence_list: recurrence ? [recurrence] : [],
+          is_all_day: isAllDay,
+        },
       });
 
       if (response.error_codes.length > 0) {
