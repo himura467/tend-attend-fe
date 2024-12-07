@@ -41,6 +41,25 @@ export const toISOStringWithTimezone = (date: Date, timezone: string): string =>
   return `${year}-${month}-${day}T${hour}:${minute}:${second}${tzSign}${tzHour}:${tzMinute}`;
 };
 
+export const parseISOStringWithTimezone = (isoString: string): [Date, string] => {
+  const zonedDate = new TZDateMini(isoString).withTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const tzOffset = -zonedDate.getTimezoneOffset();
+
+  let tzString: string;
+  switch (tzOffset) {
+    case 0:
+      tzString = "UTC";
+      break;
+    case 540:
+      tzString = "Asia/Tokyo";
+      break;
+    default:
+      throw new Error(`Unsupported timezone offset: ${tzOffset}`);
+  }
+
+  return [zonedDate, tzString];
+};
+
 const ymdDateSchema = z
   .date()
   .refine(
