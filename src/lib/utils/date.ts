@@ -114,3 +114,11 @@ export const getCurrentYmdDate = (date: Date | string): YmdDate => {
   date.setHours(0, 0, 0, 0);
   return ymdDateSchema.parse(date);
 };
+
+export const getYmdDeltaDays = (before: YmdDate, after: YmdDate): number => {
+  return (after.getTime() - before.getTime()) / (1000 * 60 * 60 * 24);
+};
+
+export const getYmdHm15DeltaMinutes = (before: YmdHm15Date, after: YmdHm15Date): number => {
+  return (after.getTime() - before.getTime()) / (1000 * 60);
+};
