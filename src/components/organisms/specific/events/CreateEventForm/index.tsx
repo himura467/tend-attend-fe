@@ -100,6 +100,13 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
     }
   }, [toast]);
 
+  React.useEffect(() => {
+    const fetch = async () => {
+      await fetchEvents();
+    };
+    void fetch();
+  }, [fetchEvents]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
