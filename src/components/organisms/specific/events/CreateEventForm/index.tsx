@@ -18,7 +18,6 @@ import {
   YmdHm15Date,
   parseYmdDate,
   parseYmdHm15Date,
-  isYmdDate,
   getCurrentYmdDate,
   applyTimezone,
   parseISOStringWithTimezone,
@@ -36,6 +35,7 @@ interface Event {
   location: string | null;
   start: YmdDate | YmdHm15Date;
   end: YmdDate | YmdHm15Date;
+  isAllDay: boolean;
   recurrences: string[];
   timezone: string;
 }
@@ -79,6 +79,7 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
               location: event.location,
               start: event.is_all_day ? parseYmdDate(start) : parseYmdHm15Date(start),
               end: event.is_all_day ? parseYmdDate(end) : parseYmdHm15Date(end),
+              isAllDay: event.is_all_day,
               recurrences: event.recurrence_list,
               timezone: startTz,
             };
@@ -178,9 +179,9 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
     return events.map((event) => {
       const baseEvent = {
         title: event.summary,
-        start: isYmdDate(event.start) ? event.start : applyTimezone(event.start, event.timezone),
-        end: isYmdDate(event.end) ? endOfDay(event.end) : applyTimezone(event.end, event.timezone),
-        allDay: isYmdDate(event.start),
+        start: event.isAllDay ? event.start : applyTimezone(event.start, event.timezone),
+        end: event.isAllDay ? endOfDay(event.end) : applyTimezone(event.end, event.timezone),
+        allDay: event.isAllDay,
       };
       const rrule = parseRecurrence(event.recurrences);
       return rrule

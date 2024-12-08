@@ -103,10 +103,6 @@ export const parseYmdHm15Date = (date: Date | string): YmdHm15Date => {
   return ymdHm15DateSchema.parse(new Date(date));
 };
 
-export const isYmdDate = (value: unknown): value is YmdDate => {
-  return ymdDateSchema.safeParse(value).success;
-};
-
 export const getCurrentYmdDate = (date: Date | string): YmdDate => {
   if (!(date instanceof Date)) {
     date = new Date(date);
