@@ -14,3 +14,8 @@ export interface CreateEventRequest {
 export interface CreateEventResponse {
   error_codes: number[];
 }
+
+export interface GetHostEventsResponse {
+  events: Event[];
+  error_codes: number[];
+}

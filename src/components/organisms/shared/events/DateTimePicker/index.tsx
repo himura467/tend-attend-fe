@@ -8,36 +8,37 @@ import { Switch } from "@/components/ui/switch";
 import { CalendarIcon, Clock, Repeat } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentYmdDate } from "@/lib/utils/date";
+import { areEqual } from "@/lib/utils/array";
 
-type RecurrenceOption = {
+type RecurrencesOption = {
   label: string;
-  value: string;
+  value: string[];
 };
 
-const recurrenceOptions: RecurrenceOption[] = [
+const recurrencesOptions: RecurrencesOption[] = [
   {
     label: "Does not repeat",
-    value: "",
+    value: [],
   },
   {
     label: "Every day",
-    value: "RRULE:FREQ=DAILY",
+    value: ["RRULE:FREQ=DAILY"],
   },
   {
     label: "Every week",
-    value: "RRULE:FREQ=WEEKLY",
+    value: ["RRULE:FREQ=WEEKLY"],
   },
   {
     label: "Every 2 weeks",
-    value: "RRULE:FREQ=WEEKLY;INTERVAL=2",
+    value: ["RRULE:FREQ=WEEKLY;INTERVAL=2"],
   },
   {
     label: "Every month",
-    value: "RRULE:FREQ=MONTHLY",
+    value: ["RRULE:FREQ=MONTHLY"],
   },
   {
     label: "Every year",
-    value: "RRULE:FREQ=YEARLY",
+    value: ["RRULE:FREQ=YEARLY"],
   },
 ];
 
@@ -64,8 +65,8 @@ interface DateTimePickerProps {
   onEndDateChange: (date: Date) => void;
   isAllDay: boolean;
   onIsAllDayChange: (isAllDay: boolean) => void;
-  recurrence?: string | null;
-  onRecurrenceChange: (recurrence: string | null) => void;
+  recurrences: string[];
+  onRecurrencesChange: (recurrences: string[]) => void;
   timezone: string;
   onTimezoneChange: (timezone: string) => void;
 }
@@ -77,8 +78,8 @@ export const DateTimePicker = ({
   onEndDateChange,
   isAllDay,
   onIsAllDayChange,
-  recurrence,
-  onRecurrenceChange,
+  recurrences,
+  onRecurrencesChange,
   timezone = Intl.DateTimeFormat().resolvedOptions().timeZone,
   onTimezoneChange,
 }: DateTimePickerProps): React.JSX.Element => {
@@ -99,10 +100,10 @@ export const DateTimePicker = ({
     return `${hours}h`;
   };
 
-  const getRecurrenceLabel = (): string | null => {
-    if (!recurrence) return null;
-    const option = recurrenceOptions.find((r) => r.value === recurrence);
-    return option && option.value != "" ? option.label : null;
+  const getRecurrencesLabel = (): string => {
+    const option = recurrencesOptions.find((r) => areEqual(r.value, recurrences));
+    if (!option) throw new Error("Unsupported recurrences");
+    return option.label;
   };
 
   return (
@@ -227,23 +228,26 @@ export const DateTimePicker = ({
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
-              className={cn("flex items-center space-x-2 text-sm", !getRecurrenceLabel() && "text-muted-foreground")}
+              className={cn(
+                "flex items-center space-x-2 text-sm",
+                getRecurrencesLabel() === "Does not repeat" && "text-muted-foreground",
+              )}
             >
               <Repeat className="h-4 w-4" />
-              <span>{getRecurrenceLabel() ?? "Repeat"}</span>
+              <span>{getRecurrencesLabel() === "Does not repeat" ? "Repeat" : getRecurrencesLabel()}</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[240px] p-0" align="start">
             <div className="rounded-md bg-popover p-1">
-              {recurrenceOptions.map((r) => (
+              {recurrencesOptions.map((r) => (
                 <Button
-                  key={r.value}
+                  key={r.label}
                   variant="ghost"
                   className={cn(
                     "w-full justify-start font-normal",
-                    recurrence === r.value && "bg-accent text-accent-foreground",
+                    recurrences === r.value && "bg-accent text-accent-foreground",
                   )}
-                  onClick={() => onRecurrenceChange(r.value)}
+                  onClick={() => onRecurrencesChange(r.value)}
                 >
                   <span className="flex flex-col items-start">
                     <span>{r.label}</span>

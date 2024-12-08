@@ -3,6 +3,7 @@
 import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import rrulePlugin from "@fullcalendar/rrule";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,18 +21,22 @@ import {
   isYmdDate,
   getCurrentYmdDate,
   applyTimezone,
+  parseISOStringWithTimezone,
+  getYmdDeltaDays,
+  getYmdHm15DeltaMinutes,
 } from "@/lib/utils/date";
 import { DateTimePicker } from "@/components/organisms/shared/events/DateTimePicker";
 import { startOfDay, endOfDay, addDays } from "date-fns";
-import { createEvent } from "@/lib/api/events";
+import { createEvent, getHostEvents } from "@/lib/api/events";
 import { routerPush } from "@/lib/utils/router";
+import { parseRecurrence, toDatetime } from "@/lib/utils/rfc5545";
 
 interface Event {
   summary: string;
   location: string | null;
   start: YmdDate | YmdHm15Date;
   end: YmdDate | YmdHm15Date;
-  recurrence: string | null;
+  recurrences: string[];
   timezone: string;
 }
 
@@ -53,9 +58,54 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
   const [startDate, setStartDate] = React.useState<Date>(getCurrentYmdDate(new Date()));
   const [endDate, setEndDate] = React.useState<Date>(addDays(getCurrentYmdDate(new Date()), 1));
   const [isAllDay, setIsAllDay] = React.useState<boolean>(true);
-  const [recurrence, setRecurrence] = React.useState<string | null>(null);
+  const [recurrences, setRecurrences] = React.useState<string[]>([]);
   const [timezone, setTimezone] = React.useState<string>(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const [error, setError] = React.useState("");
+
+  const fetchEvents = React.useCallback(async () => {
+    try {
+      const response = await getHostEvents();
+      if (response.error_codes.length === 0) {
+        setEvents(
+          response.events.map((event) => {
+            const [start, startTz] = parseISOStringWithTimezone(event.start);
+            const [end, endTz] = parseISOStringWithTimezone(event.end);
+            if (startTz !== endTz) {
+              throw new Error("Start and end timezones do not match");
+            }
+
+            return {
+              summary: event.summary,
+              location: event.location,
+              start: event.is_all_day ? parseYmdDate(start) : parseYmdHm15Date(start),
+              end: event.is_all_day ? parseYmdDate(end) : parseYmdHm15Date(end),
+              recurrences: event.recurrence_list,
+              timezone: startTz,
+            };
+          }),
+        );
+      } else {
+        toast({
+          title: "An error occurred",
+          description: "Failed to fetch events",
+          variant: "destructive",
+        });
+      }
+    } catch {
+      toast({
+        title: "An error occurred",
+        description: "Failed to fetch events",
+        variant: "destructive",
+      });
+    }
+  }, [toast]);
+
+  React.useEffect(() => {
+    const fetch = async () => {
+      await fetchEvents();
+    };
+    void fetch();
+  }, [fetchEvents]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -75,7 +125,7 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
           location: values.location,
           start: toISOStringWithTimezone(startDate, timezone),
           end: toISOStringWithTimezone(endDate, timezone),
-          recurrence_list: recurrence ? [recurrence] : [],
+          recurrence_list: recurrences,
           is_all_day: isAllDay,
         },
       });
@@ -89,15 +139,6 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
       setError("An unexpected error occurred. Please try again later.");
     }
 
-    const newEvent: Event = {
-      summary: values.summary,
-      location: values.location,
-      start: isAllDay ? parseYmdDate(startDate) : parseYmdHm15Date(startDate),
-      end: isAllDay ? parseYmdDate(endDate) : parseYmdHm15Date(endDate),
-      recurrence: recurrence,
-      timezone: timezone,
-    };
-    setEvents([...events, newEvent]);
     toast({
       title: "Event registered",
       description: `You have registered for ${values.summary}`,
@@ -106,8 +147,10 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
     setStartDate(getCurrentYmdDate(new Date()));
     setEndDate(addDays(getCurrentYmdDate(new Date()), 1));
     setIsAllDay(true);
-    setRecurrence(null);
+    setRecurrences([]);
     setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+    await fetchEvents();
   };
 
   const handleStartDateChange = (date: Date): void => {
@@ -131,18 +174,35 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
     }
   };
 
+  const mapEventsToFullCalendar = (events: Event[]) => {
+    return events.map((event) => {
+      const baseEvent = {
+        title: event.summary,
+        start: isYmdDate(event.start) ? event.start : applyTimezone(event.start, event.timezone),
+        end: isYmdDate(event.end) ? endOfDay(event.end) : applyTimezone(event.end, event.timezone),
+        allDay: isYmdDate(event.start),
+      };
+      const rrule = parseRecurrence(event.recurrences);
+      return rrule
+        ? {
+            title: baseEvent.title,
+            allDay: baseEvent.allDay,
+            rrule: { ...rrule.options, dtstart: toDatetime(baseEvent.start) },
+            duration: baseEvent.allDay
+              ? { days: getYmdDeltaDays(parseYmdDate(event.start), parseYmdDate(event.end)) }
+              : { minutes: getYmdHm15DeltaMinutes(parseYmdHm15Date(event.start), parseYmdHm15Date(event.end)) },
+          }
+        : baseEvent;
+    });
+  };
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div>
         <FullCalendar
-          plugins={[dayGridPlugin]}
+          plugins={[rrulePlugin, dayGridPlugin]}
           initialView="dayGridMonth"
-          events={events.map((event) => ({
-            title: event.summary,
-            start: isYmdDate(event.start) ? event.start : applyTimezone(event.start, event.timezone),
-            end: isYmdDate(event.end) ? endOfDay(event.end) : applyTimezone(event.end, event.timezone),
-            allDay: isYmdDate(event.start),
-          }))}
+          events={mapEventsToFullCalendar(events)}
         />
       </div>
       <div>
@@ -185,8 +245,8 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
                 onEndDateChange={handleEndDateChange}
                 isAllDay={isAllDay}
                 onIsAllDayChange={handleIsAllDayChange}
-                recurrence={recurrence}
-                onRecurrenceChange={setRecurrence}
+                recurrences={recurrences}
+                onRecurrencesChange={setRecurrences}
                 timezone={timezone}
                 onTimezoneChange={setTimezone}
               />
