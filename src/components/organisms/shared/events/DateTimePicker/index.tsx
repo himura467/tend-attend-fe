@@ -8,11 +8,12 @@ import { Switch } from "@/components/ui/switch";
 import { CalendarIcon, Clock, Repeat } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentYmdDate } from "@/lib/utils/date";
-import { areEqual } from "@/lib/utils/array";
+import { areEqualByRegExps } from "@/lib/utils/array";
 
 type RecurrencesOption = {
   label: string;
   value: string[];
+  regExps: RegExp[];
 };
 
 type TimezoneOption = {
@@ -73,26 +74,32 @@ export const DateTimePicker = ({
       {
         label: "Does not repeat",
         value: [],
+        regExps: [],
       },
       {
         label: "Every day",
         value: ["RRULE:FREQ=DAILY"],
+        regExps: [/^RRULE:FREQ=DAILY$/],
       },
       {
         label: "Every week",
         value: [`RRULE:FREQ=WEEKLY;BYDAY=${dayOfWeek}`],
+        regExps: [/^RRULE:FREQ=WEEKLY;BYDAY=[A-Z]{2}$/],
       },
       {
         label: "Every 2 weeks",
         value: [`RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=${dayOfWeek}`],
+        regExps: [/^RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=[A-Z]{2}$/],
       },
       {
         label: "Every month",
         value: ["RRULE:FREQ=MONTHLY"],
+        regExps: [/^RRULE:FREQ=MONTHLY$/],
       },
       {
         label: "Every year",
         value: ["RRULE:FREQ=YEARLY"],
+        regExps: [/^RRULE:FREQ=YEARLY$/],
       },
     ];
   }, [startDate]);
@@ -104,7 +111,7 @@ export const DateTimePicker = ({
   };
 
   const getRecurrencesLabel = (): string => {
-    const option = recurrencesOptions.find((r) => areEqual(r.value, recurrences));
+    const option = recurrencesOptions.find((r) => areEqualByRegExps(recurrences, r.regExps));
     if (!option) throw new Error("Unsupported recurrences");
     return option.label;
   };
