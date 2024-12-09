@@ -97,7 +97,7 @@ export const DateTimePicker = ({
       {
         label: "Every month",
         value: [`RRULE:FREQ=MONTHLY;BYMONTHDAY=${day};BYHOUR=${hour};BYMINUTE=${minute}`],
-        regExps: [/^RRULE:FREQ=MONTHLY;BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
+        regExps: [/^RRULE:FREQ=MONTHLY;BYMONTHDAY=\d{1,2};BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
       },
       {
         label: "Every year",
