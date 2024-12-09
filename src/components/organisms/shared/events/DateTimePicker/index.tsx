@@ -101,8 +101,8 @@ export const DateTimePicker = ({
       },
       {
         label: "Every year",
-        value: [`RRULE:FREQ=YEARLY;BYHOUR=${hour};BYMINUTE=${minute}`],
-        regExps: [/^RRULE:FREQ=YEARLY;BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
+        value: [`RRULE:FREQ=YEARLY;BYYEARDAY=${day};BYHOUR=${hour};BYMINUTE=${minute}`],
+        regExps: [/^RRULE:FREQ=YEARLY;BYYEARDAY=\d{1,2};BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
       },
     ];
   }, [startDate]);
