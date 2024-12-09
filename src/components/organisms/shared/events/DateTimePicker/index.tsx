@@ -69,6 +69,8 @@ export const DateTimePicker = ({
   }, []);
 
   const recurrencesOptions = React.useMemo((): RecurrencesOption[] => {
+    const hour = startDate.getHours().toString();
+    const minute = startDate.getMinutes().toString();
     const dayOfWeek = format(startDate, "EEE").toUpperCase().slice(0, 2);
     return [
       {
@@ -78,28 +80,28 @@ export const DateTimePicker = ({
       },
       {
         label: "Every day",
-        value: ["RRULE:FREQ=DAILY"],
-        regExps: [/^RRULE:FREQ=DAILY$/],
+        value: [`RRULE:FREQ=DAILY;BYHOUR=${hour};BYMINUTE=${minute}`],
+        regExps: [/^RRULE:FREQ=DAILY;BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
       },
       {
         label: "Every week",
-        value: [`RRULE:FREQ=WEEKLY;BYDAY=${dayOfWeek}`],
-        regExps: [/^RRULE:FREQ=WEEKLY;BYDAY=[A-Z]{2}$/],
+        value: [`RRULE:FREQ=WEEKLY;BYDAY=${dayOfWeek};BYHOUR=${hour};BYMINUTE=${minute}`],
+        regExps: [/^RRULE:FREQ=WEEKLY;BYDAY=[A-Z]{2};BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
       },
       {
         label: "Every 2 weeks",
-        value: [`RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=${dayOfWeek}`],
-        regExps: [/^RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=[A-Z]{2}$/],
+        value: [`RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=${dayOfWeek};BYHOUR=${hour};BYMINUTE=${minute}`],
+        regExps: [/^RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=[A-Z]{2};BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
       },
       {
         label: "Every month",
-        value: ["RRULE:FREQ=MONTHLY"],
-        regExps: [/^RRULE:FREQ=MONTHLY$/],
+        value: [`RRULE:FREQ=MONTHLY;BYHOUR=${hour};BYMINUTE=${minute}`],
+        regExps: [/^RRULE:FREQ=MONTHLY;BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
       },
       {
         label: "Every year",
-        value: ["RRULE:FREQ=YEARLY"],
-        regExps: [/^RRULE:FREQ=YEARLY$/],
+        value: [`RRULE:FREQ=YEARLY;BYHOUR=${hour};BYMINUTE=${minute}`],
+        regExps: [/^RRULE:FREQ=YEARLY;BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
       },
     ];
   }, [startDate]);
