@@ -69,6 +69,7 @@ export const DateTimePicker = ({
   }, []);
 
   const recurrencesOptions = React.useMemo((): RecurrencesOption[] => {
+    const month = (startDate.getMonth() + 1).toString();
     const day = startDate.getDate().toString();
     const hour = startDate.getHours().toString();
     const minute = startDate.getMinutes().toString();
@@ -101,8 +102,8 @@ export const DateTimePicker = ({
       },
       {
         label: "Every year",
-        value: [`RRULE:FREQ=YEARLY;BYYEARDAY=${day};BYHOUR=${hour};BYMINUTE=${minute}`],
-        regExps: [/^RRULE:FREQ=YEARLY;BYYEARDAY=\d{1,2};BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
+        value: [`RRULE:FREQ=YEARLY;BYMONTH=${month};BYMONTHDAY=${day};BYHOUR=${hour};BYMINUTE=${minute}`],
+        regExps: [/^RRULE:FREQ=YEARLY;BYMONTH=\d{1,2};BYMONTHDAY=\d{1,2};BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
       },
     ];
   }, [startDate]);
