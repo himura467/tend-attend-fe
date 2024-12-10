@@ -1,64 +1,5 @@
 import { z } from "zod";
-import { tzOffset } from "@date-fns/tz";
-import { TZDateMini } from "@date-fns/tz";
-
-export const applyTimezone = (date: Date, timezone: string): Date => {
-  return new TZDateMini(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    date.getHours(),
-    date.getMinutes(),
-    timezone,
-  ).withTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
-};
-
-export const toISOStringWithTimezone = (date: Date, timezone: string): string => {
-  const zonedDate = new TZDateMini(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    date.getHours(),
-    date.getMinutes(),
-    Intl.DateTimeFormat().resolvedOptions().timeZone,
-  ).withTimeZone(timezone);
-  const year = zonedDate.getFullYear().toString().padStart(4, "0");
-  const month = (zonedDate.getMonth() + 1).toString().padStart(2, "0");
-  const day = zonedDate.getDate().toString().padStart(2, "0");
-  const hour = zonedDate.getHours().toString().padStart(2, "0");
-  const minute = zonedDate.getMinutes().toString().padStart(2, "0");
-  const second = zonedDate.getSeconds().toString().padStart(2, "0");
-  const utcDate = new Date(Date.UTC(1970));
-  const diffFromUtc = tzOffset(timezone, utcDate);
-  if (diffFromUtc === 0) {
-    return `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
-  }
-  const tzSign = diffFromUtc > 0 ? "+" : "-";
-  const tzHour = Math.floor(Math.abs(diffFromUtc) / 60)
-    .toString()
-    .padStart(2, "0");
-  const tzMinute = (Math.abs(diffFromUtc) % 60).toString().padStart(2, "0");
-  return `${year}-${month}-${day}T${hour}:${minute}:${second}${tzSign}${tzHour}:${tzMinute}`;
-};
-
-export const parseISOStringWithTimezone = (isoString: string): [Date, string] => {
-  const zonedDate = new TZDateMini(isoString).withTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
-  const tzOffset = -zonedDate.getTimezoneOffset();
-
-  let tzString: string;
-  switch (tzOffset) {
-    case 0:
-      tzString = "UTC";
-      break;
-    case 540:
-      tzString = "Asia/Tokyo";
-      break;
-    default:
-      throw new Error(`Unsupported timezone offset: ${tzOffset}`);
-  }
-
-  return [zonedDate, tzString];
-};
+import { applyTimezone } from "@/lib/utils/timezone";
 
 const ymdDateSchema = z
   .date()
@@ -89,18 +30,20 @@ const ymdHm15DateSchema = z
   .brand<"YmdHm15Date">();
 export type YmdHm15Date = z.infer<typeof ymdHm15DateSchema>;
 
-export const parseYmdDate = (date: Date | string): YmdDate => {
-  if (date instanceof Date) {
-    return ymdDateSchema.parse(date);
+export const parseYmdDate = (date: Date | string, srcTz: string, dstTz: string): YmdDate => {
+  if (typeof date === "string") {
+    date = new Date(date);
   }
-  return ymdDateSchema.parse(new Date(date));
+  const zonedDate = applyTimezone(date, srcTz, dstTz);
+  return ymdDateSchema.parse(zonedDate);
 };
 
-export const parseYmdHm15Date = (date: Date | string): YmdHm15Date => {
-  if (date instanceof Date) {
-    return ymdHm15DateSchema.parse(date);
+export const parseYmdHm15Date = (date: Date | string, srcTz: string, dstTz: string): YmdHm15Date => {
+  if (typeof date === "string") {
+    date = new Date(date);
   }
-  return ymdHm15DateSchema.parse(new Date(date));
+  const zonedDate = applyTimezone(date, srcTz, dstTz);
+  return ymdHm15DateSchema.parse(zonedDate);
 };
 
 export const getCurrentYmdDate = (date: Date | string): YmdDate => {

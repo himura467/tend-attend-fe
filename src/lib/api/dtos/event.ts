@@ -3,8 +3,9 @@ interface Event {
   location: string | null;
   start: string;
   end: string;
-  recurrence_list: string[];
   is_all_day: boolean;
+  recurrence_list: string[];
+  timezone: string;
 }
 
 export interface CreateEventRequest {

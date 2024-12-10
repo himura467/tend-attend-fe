@@ -13,22 +13,20 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import {
-  toISOStringWithTimezone,
   YmdDate,
   YmdHm15Date,
   parseYmdDate,
   parseYmdHm15Date,
   getCurrentYmdDate,
-  applyTimezone,
-  parseISOStringWithTimezone,
   getYmdDeltaDays,
   getYmdHm15DeltaMinutes,
 } from "@/lib/utils/date";
+import { applyTimezone } from "@/lib/utils/timezone";
 import { DateTimePicker } from "@/components/organisms/shared/events/DateTimePicker";
 import { startOfDay, endOfDay, addDays } from "date-fns";
 import { createEvent, getHostEvents } from "@/lib/api/events";
 import { routerPush } from "@/lib/utils/router";
-import { parseRecurrence, toDatetime } from "@/lib/utils/rfc5545";
+import { parseRecurrence } from "@/lib/utils/rfc5545";
 
 interface Event {
   summary: string;
@@ -68,20 +66,21 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
       if (response.error_codes.length === 0) {
         setEvents(
           response.events.map((event) => {
-            const [start, startTz] = parseISOStringWithTimezone(event.start);
-            const [end, endTz] = parseISOStringWithTimezone(event.end);
-            if (startTz !== endTz) {
-              throw new Error("Start and end timezones do not match");
-            }
+            const start = new Date(Date.parse(event.start));
+            const end = new Date(Date.parse(event.end));
 
             return {
               summary: event.summary,
               location: event.location,
-              start: event.is_all_day ? parseYmdDate(start) : parseYmdHm15Date(start),
-              end: event.is_all_day ? parseYmdDate(end) : parseYmdHm15Date(end),
+              start: event.is_all_day
+                ? parseYmdDate(start, "UTC", event.timezone)
+                : parseYmdHm15Date(start, "UTC", event.timezone),
+              end: event.is_all_day
+                ? parseYmdDate(end, "UTC", event.timezone)
+                : parseYmdHm15Date(end, "UTC", event.timezone),
               isAllDay: event.is_all_day,
               recurrences: event.recurrence_list,
-              timezone: startTz,
+              timezone: event.timezone,
             };
           }),
         );
@@ -124,10 +123,11 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
         event: {
           summary: values.summary,
           location: values.location,
-          start: toISOStringWithTimezone(startDate, timezone),
-          end: toISOStringWithTimezone(endDate, timezone),
-          recurrence_list: recurrences,
+          start: applyTimezone(startDate, timezone, "UTC").toISOString(),
+          end: applyTimezone(endDate, timezone, "UTC").toISOString(),
           is_all_day: isAllDay,
+          recurrence_list: recurrences,
+          timezone: timezone,
         },
       });
 
@@ -179,8 +179,12 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
     return events.map((event) => {
       const baseEvent = {
         title: event.summary,
-        start: event.isAllDay ? event.start : applyTimezone(event.start, event.timezone),
-        end: event.isAllDay ? endOfDay(event.end) : applyTimezone(event.end, event.timezone),
+        start: event.isAllDay
+          ? event.start
+          : applyTimezone(event.start, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
+        end: event.isAllDay
+          ? endOfDay(event.end)
+          : applyTimezone(event.end, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
         allDay: event.isAllDay,
       };
       const rrule = parseRecurrence(event.recurrences);
@@ -188,10 +192,20 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
         ? {
             title: baseEvent.title,
             allDay: baseEvent.allDay,
-            rrule: { ...rrule.options, dtstart: toDatetime(baseEvent.start) },
+            rrule: { ...rrule.options, dtstart: baseEvent.start },
             duration: baseEvent.allDay
-              ? { days: getYmdDeltaDays(parseYmdDate(event.start), parseYmdDate(event.end)) }
-              : { minutes: getYmdHm15DeltaMinutes(parseYmdHm15Date(event.start), parseYmdHm15Date(event.end)) },
+              ? {
+                  days: getYmdDeltaDays(
+                    parseYmdDate(event.start, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
+                    parseYmdDate(event.end, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
+                  ),
+                }
+              : {
+                  minutes: getYmdHm15DeltaMinutes(
+                    parseYmdHm15Date(event.start, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
+                    parseYmdHm15Date(event.end, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
+                  ),
+                },
           }
         : baseEvent;
     });
