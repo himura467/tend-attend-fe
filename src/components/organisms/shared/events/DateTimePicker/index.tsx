@@ -9,6 +9,7 @@ import { CalendarIcon, Clock, Repeat } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentYmdDate } from "@/lib/utils/date";
 import { areEqualByRegExps } from "@/lib/utils/array";
+import { applyTimezone } from "@/lib/utils/timezone";
 
 type RecurrencesOption = {
   label: string;
@@ -69,11 +70,12 @@ export const DateTimePicker = ({
   }, []);
 
   const recurrencesOptions = React.useMemo((): RecurrencesOption[] => {
-    const month = (startDate.getMonth() + 1).toString();
-    const day = startDate.getDate().toString();
-    const hour = startDate.getHours().toString();
-    const minute = startDate.getMinutes().toString();
-    const dayOfWeek = format(startDate, "EEE").toUpperCase().slice(0, 2);
+    const localStart = applyTimezone(startDate, timezone, Intl.DateTimeFormat().resolvedOptions().timeZone);
+    const month = (localStart.getMonth() + 1).toString();
+    const day = localStart.getDate().toString();
+    const hour = localStart.getHours().toString();
+    const minute = localStart.getMinutes().toString();
+    const dayOfWeek = format(localStart, "EEE").toUpperCase().slice(0, 2);
     return [
       {
         label: "Does not repeat",
@@ -106,7 +108,7 @@ export const DateTimePicker = ({
         regExps: [/^RRULE:FREQ=YEARLY;BYMONTH=\d{1,2};BYMONTHDAY=\d{1,2};BYHOUR=\d{1,2};BYMINUTE=\d{1,2}$/],
       },
     ];
-  }, [startDate]);
+  }, [startDate, timezone]);
 
   const getDuration = (): string => {
     const diff = endDate.getTime() - startDate.getTime();
@@ -114,11 +116,16 @@ export const DateTimePicker = ({
     return `${hours}h`;
   };
 
-  const getRecurrencesLabel = (): string => {
+  const getRecurrencesOption = React.useCallback((): RecurrencesOption => {
     const option = recurrencesOptions.find((r) => areEqualByRegExps(recurrences, r.regExps));
     if (!option) throw new Error("Unsupported recurrences");
-    return option.label;
-  };
+    return option;
+  }, [recurrences, recurrencesOptions]);
+
+  React.useEffect(() => {
+    const option = getRecurrencesOption();
+    onRecurrencesChange(option.value);
+  }, [getRecurrencesOption, onRecurrencesChange, startDate, timezone]);
 
   return (
     <div className="flex flex-col space-y-4 rounded-lg border p-4">
@@ -244,11 +251,13 @@ export const DateTimePicker = ({
               variant="ghost"
               className={cn(
                 "flex items-center space-x-2 text-sm",
-                getRecurrencesLabel() === "Does not repeat" && "text-muted-foreground",
+                getRecurrencesOption().label === "Does not repeat" && "text-muted-foreground",
               )}
             >
               <Repeat className="h-4 w-4" />
-              <span>{getRecurrencesLabel() === "Does not repeat" ? "Repeat" : getRecurrencesLabel()}</span>
+              <span>
+                {getRecurrencesOption().label === "Does not repeat" ? "Repeat" : getRecurrencesOption().label}
+              </span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[240px] p-0" align="start">
