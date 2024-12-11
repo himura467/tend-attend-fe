@@ -3,6 +3,7 @@
 import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import rrulePlugin from "@fullcalendar/rrule";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -101,10 +102,7 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
   }, [toast]);
 
   React.useEffect(() => {
-    const fetch = async () => {
-      await fetchEvents();
-    };
-    void fetch();
+    void fetchEvents();
   }, [fetchEvents]);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -215,8 +213,13 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div>
         <FullCalendar
-          plugins={[rrulePlugin, dayGridPlugin]}
+          plugins={[rrulePlugin, dayGridPlugin, timeGridPlugin]}
           initialView="dayGridMonth"
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+          }}
           events={mapEventsToFullCalendar(events)}
         />
       </div>
