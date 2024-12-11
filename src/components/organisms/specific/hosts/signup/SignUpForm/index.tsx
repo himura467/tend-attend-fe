@@ -8,17 +8,17 @@ import { createHostAccount } from "@/lib/api/hosts";
 import { rr } from "@/lib/utils/reverse-router";
 import { routerPush } from "@/lib/utils/router";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 export const SignUpForm = (): React.JSX.Element => {
   const router = useRouter();
+  const { toast } = useToast();
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState("");
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    setError("");
 
     try {
       const response = await createHostAccount({
@@ -28,12 +28,20 @@ export const SignUpForm = (): React.JSX.Element => {
       });
 
       if (response.error_codes.length > 0) {
-        setError("An error occurred. Please try again.");
+        toast({
+          title: "An error occurred",
+          description: "Failed to create an account",
+          variant: "destructive",
+        });
       } else {
         routerPush(rr.hosts.signin.index(), router);
       }
     } catch {
-      setError("An unexpected error occurred. Please try again later.");
+      toast({
+        title: "An error occurred",
+        description: "Failed to create an account",
+        variant: "destructive",
+      });
     }
   };
 
@@ -72,7 +80,6 @@ export const SignUpForm = (): React.JSX.Element => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      {error && <p>{error}</p>}
       <Button type="submit" className="w-full">
         Create account
       </Button>
