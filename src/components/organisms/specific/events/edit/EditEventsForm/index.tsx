@@ -106,6 +106,11 @@ export const EditEventsForm = (): React.JSX.Element => {
           description: "Failed to create event",
           variant: "destructive",
         });
+      } else {
+        toast({
+          title: "Event registered",
+          description: `You have registered for ${values.summary}`,
+        });
       }
     } catch {
       toast({
@@ -115,10 +120,6 @@ export const EditEventsForm = (): React.JSX.Element => {
       });
     }
 
-    toast({
-      title: "Event registered",
-      description: `You have registered for ${values.summary}`,
-    });
     setStartDate(getCurrentYmdDate(new Date()));
     setEndDate(addDays(getCurrentYmdDate(new Date()), 1));
     setIsAllDay(true);

@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import "@/app/globals.css";
 import React from "react";
 import { NextPage } from "next";
+import { Toaster } from "@/components/ui/toaster";
 
 const fontHeading = Inter({
   subsets: ["latin"],
@@ -23,7 +24,10 @@ interface RootLayoutProps {
 const RootLayout: NextPage<RootLayoutProps> = ({ children }): React.JSX.Element => {
   return (
     <html lang="en">
-      <body className={cn("antialiased", fontHeading.variable, fontBody.variable)}>{children}</body>
+      <body className={cn("antialiased", fontHeading.variable, fontBody.variable)}>
+        <main>{children}</main>
+        <Toaster />
+      </body>
     </html>
   );
 };
