@@ -5,14 +5,8 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import rrulePlugin from "@fullcalendar/rrule";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import {
   YmdDate,
   YmdHm15Date,
@@ -23,11 +17,11 @@ import {
   getYmdHm15DeltaMinutes,
 } from "@/lib/utils/date";
 import { applyTimezone } from "@/lib/utils/timezone";
-import { DateTimePicker } from "@/components/organisms/shared/events/DateTimePicker";
+import { CreateEventForm } from "@/components/organisms/specific/events/edit/CreateEventForm";
 import { startOfDay, endOfDay, addDays } from "date-fns";
 import { createEvent, getHostEvents } from "@/lib/api/events";
-import { routerPush } from "@/lib/utils/router";
 import { parseRecurrence } from "@/lib/utils/rfc5545";
+import { formSchema } from "@/components/organisms/specific/events/edit/CreateEventForm";
 
 interface Event {
   summary: string;
@@ -39,19 +33,7 @@ interface Event {
   timezone: string;
 }
 
-const formSchema = z.object({
-  summary: z.string({
-    required_error: "A summary is required.",
-  }),
-  location: z.string().nullable(),
-});
-
-interface CreateEventFormProps {
-  location: string;
-}
-
-export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.Element => {
-  const router = useRouter();
+export const EditEventsForm = (): React.JSX.Element => {
   const { toast } = useToast();
   const [events, setEvents] = React.useState<Event[]>([]);
   const [startDate, setStartDate] = React.useState<Date>(getCurrentYmdDate(new Date()));
@@ -59,7 +41,6 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
   const [isAllDay, setIsAllDay] = React.useState<boolean>(true);
   const [recurrences, setRecurrences] = React.useState<string[]>([]);
   const [timezone, setTimezone] = React.useState<string>(Intl.DateTimeFormat().resolvedOptions().timeZone);
-  const [error, setError] = React.useState("");
 
   const fetchEvents = React.useCallback(async () => {
     try {
@@ -105,17 +86,7 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
     void fetchEvents();
   }, [fetchEvents]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      summary: "",
-      location: "",
-    },
-  });
-
   const onSubmit = async (values: z.infer<typeof formSchema>): Promise<void> => {
-    setError("");
-
     try {
       const response = await createEvent({
         event: {
@@ -130,19 +101,24 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
       });
 
       if (response.error_codes.length > 0) {
-        setError("An error occurred. Please try again.");
-      } else {
-        routerPush({ href: location }, router);
+        toast({
+          title: "An error occurred",
+          description: "Failed to create event",
+          variant: "destructive",
+        });
       }
     } catch {
-      setError("An unexpected error occurred. Please try again later.");
+      toast({
+        title: "An error occurred",
+        description: "Failed to create event",
+        variant: "destructive",
+      });
     }
 
     toast({
       title: "Event registered",
       description: `You have registered for ${values.summary}`,
     });
-    form.reset();
     setStartDate(getCurrentYmdDate(new Date()));
     setEndDate(addDays(getCurrentYmdDate(new Date()), 1));
     setIsAllDay(true);
@@ -224,55 +200,19 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
         />
       </div>
       <div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="summary"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Summary</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Event summary" {...field} />
-                  </FormControl>
-                  <FormDescription>Provide a brief summary of the event.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="location"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Event location" {...field} value={field.value ?? undefined} />
-                  </FormControl>
-                  <FormDescription>Where will the event take place?</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div>
-              <FormLabel>Event Time</FormLabel>
-              <DateTimePicker
-                startDate={startDate}
-                endDate={endDate}
-                onStartDateChange={handleStartDateChange}
-                onEndDateChange={handleEndDateChange}
-                isAllDay={isAllDay}
-                onIsAllDayChange={handleIsAllDayChange}
-                recurrences={recurrences}
-                onRecurrencesChange={setRecurrences}
-                timezone={timezone}
-                onTimezoneChange={setTimezone}
-              />
-            </div>
-            {error && <p>{error}</p>}
-            <Button type="submit">Create Event</Button>
-          </form>
-        </Form>
+        <CreateEventForm
+          onSubmit={onSubmit}
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={handleStartDateChange}
+          onEndDateChange={handleEndDateChange}
+          isAllDay={isAllDay}
+          onIsAllDayChange={handleIsAllDayChange}
+          recurrences={recurrences}
+          onRecurrencesChange={setRecurrences}
+          timezone={timezone}
+          onTimezoneChange={setTimezone}
+        />
       </div>
     </div>
   );
