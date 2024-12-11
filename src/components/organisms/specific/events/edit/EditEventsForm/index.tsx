@@ -24,6 +24,7 @@ import { parseRecurrence } from "@/lib/utils/rfc5545";
 import { formSchema } from "@/components/organisms/specific/events/edit/CreateEventForm";
 
 interface Event {
+  id: string;
   summary: string;
   location: string | null;
   start: YmdDate | YmdHm15Date;
@@ -52,6 +53,7 @@ export const EditEventsForm = (): React.JSX.Element => {
             const end = new Date(Date.parse(event.end));
 
             return {
+              id: event.id,
               summary: event.summary,
               location: event.location,
               start: event.is_all_day
@@ -153,6 +155,7 @@ export const EditEventsForm = (): React.JSX.Element => {
   const mapEventsToFullCalendar = (events: Event[]) => {
     return events.map((event) => {
       const baseEvent = {
+        id: event.id,
         title: event.summary,
         start: event.isAllDay
           ? event.start
@@ -165,6 +168,7 @@ export const EditEventsForm = (): React.JSX.Element => {
       const rrule = parseRecurrence(event.recurrences);
       return rrule
         ? {
+            id: baseEvent.id,
             title: baseEvent.title,
             allDay: baseEvent.allDay,
             rrule: { ...rrule.options, dtstart: baseEvent.start },

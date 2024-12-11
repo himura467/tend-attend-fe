@@ -8,6 +8,10 @@ interface Event {
   timezone: string;
 }
 
+interface EventWithId extends Event {
+  id: string;
+}
+
 export interface CreateEventRequest {
   event: Event;
 }
@@ -17,6 +21,6 @@ export interface CreateEventResponse {
 }
 
 export interface GetHostEventsResponse {
-  events: Event[];
+  events: EventWithId[];
   error_codes: number[];
 }
