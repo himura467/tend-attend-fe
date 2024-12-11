@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { createAuthToken } from "@/lib/api/hosts";
 import { routerPush } from "@/lib/utils/router";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 interface SignInFormProps {
   location: string;
@@ -16,13 +17,12 @@ interface SignInFormProps {
 
 export const SignInForm = ({ location }: SignInFormProps): React.JSX.Element => {
   const router = useRouter();
+  const { toast } = useToast();
   const [name, setName] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState("");
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    setError("");
 
     try {
       await createAuthToken({
@@ -32,7 +32,11 @@ export const SignInForm = ({ location }: SignInFormProps): React.JSX.Element => 
 
       routerPush({ href: location }, router);
     } catch {
-      setError("An error occurred. Please try again.");
+      toast({
+        title: "An error occurred",
+        description: "Failed to sign in",
+        variant: "destructive",
+      });
     }
   };
 
@@ -71,7 +75,6 @@ export const SignInForm = ({ location }: SignInFormProps): React.JSX.Element => 
           Forgot your password?
         </Link>
       </div>
-      {error && <p>{error}</p>}
       <Button type="submit" className="w-full">
         Sign in
       </Button>
