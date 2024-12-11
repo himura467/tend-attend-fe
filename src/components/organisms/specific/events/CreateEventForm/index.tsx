@@ -101,10 +101,7 @@ export const CreateEventForm = ({ location }: CreateEventFormProps): React.JSX.E
   }, [toast]);
 
   React.useEffect(() => {
-    const fetch = async () => {
-      await fetchEvents();
-    };
-    void fetch();
+    void fetchEvents();
   }, [fetchEvents]);
 
   const form = useForm<z.infer<typeof formSchema>>({
