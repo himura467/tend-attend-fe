@@ -31,7 +31,7 @@ interface Event {
   timezone: string;
 }
 
-export const EditEventsForm = (): React.JSX.Element => {
+export const EditEventsCalendarForm = (): React.JSX.Element => {
   const { toast } = useToast();
   const [events, setEvents] = React.useState<Event[]>([]);
   const [startDate, setStartDate] = React.useState<Date>(getCurrentYmdDate(new Date()));
