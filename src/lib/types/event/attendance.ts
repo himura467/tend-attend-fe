@@ -12,3 +12,11 @@ export enum AttendanceStatus {
   // 早退
   EARLY_DEPARTURE = 4,
 }
+
+export const AttendanceStatusRecord: Record<AttendanceStatus, string> = {
+  [AttendanceStatus.PRESENT]: "Present",
+  [AttendanceStatus.EXCUSED_ABSENCE]: "Excused Absence",
+  [AttendanceStatus.UNEXCUSED_ABSENCE]: "Unexcused Absence",
+  [AttendanceStatus.TARDY]: "Tardy",
+  [AttendanceStatus.EARLY_DEPARTURE]: "Early Departure",
+};
