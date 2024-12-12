@@ -1,3 +1,5 @@
+import { AttendanceStatus } from "@/lib/types/event/attendance";
+
 interface Event {
   summary: string;
   location: string | null;
@@ -20,7 +22,21 @@ export interface CreateEventResponse {
   error_codes: number[];
 }
 
+export interface AttendEventRequest {
+  event_id: string;
+  status: AttendanceStatus;
+}
+
+export interface AttendEventResponse {
+  error_codes: number[];
+}
+
 export interface GetHostEventsResponse {
+  events: EventWithId[];
+  error_codes: number[];
+}
+
+export interface GetGuestEventsResponse {
   events: EventWithId[];
   error_codes: number[];
 }
