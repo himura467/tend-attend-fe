@@ -1,10 +1,6 @@
 "use client";
 
 import React from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import rrulePlugin from "@fullcalendar/rrule";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -17,6 +13,7 @@ import {
   getYmdHm15DeltaMinutes,
 } from "@/lib/utils/date";
 import { applyTimezone } from "@/lib/utils/timezone";
+import { Calendar } from "@/components/organisms/shared/events/Calendar";
 import { CreateEventForm } from "@/components/organisms/specific/events/edit/CreateEventForm";
 import { startOfDay, endOfDay, addDays } from "date-fns";
 import { createEvent, getHostEvents } from "@/lib/api/events";
@@ -193,15 +190,12 @@ export const EditEventsForm = (): React.JSX.Element => {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div>
-        <FullCalendar
-          plugins={[rrulePlugin, dayGridPlugin, timeGridPlugin]}
-          initialView="dayGridMonth"
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
-          }}
+        <Calendar
           events={mapEventsToFullCalendar(events)}
+          onEventClick={(info) => {
+            // TODO: イベント更新フォームを表示する
+            console.log(info);
+          }}
         />
       </div>
       <div>
