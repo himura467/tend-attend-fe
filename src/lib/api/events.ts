@@ -5,6 +5,7 @@ import {
   AttendEventRequest,
   AttendEventResponse,
   GetHostEventsResponse,
+  GetGuestEventsResponse,
 } from "@/lib/api/dtos/event";
 
 export const createEvent = async (data: CreateEventRequest): Promise<CreateEventResponse> => {
@@ -23,6 +24,13 @@ export const attendEvent = async (data: AttendEventRequest): Promise<AttendEvent
 
 export const getHostEvents = async (): Promise<GetHostEventsResponse> => {
   const response = await axiosInstance.get<GetHostEventsResponse>("/events/hosts", {
+    withCredentials: true,
+  });
+  return response.data;
+};
+
+export const getGuestEvents = async (): Promise<GetGuestEventsResponse> => {
+  const response = await axiosInstance.get<GetGuestEventsResponse>("/events/guests", {
     withCredentials: true,
   });
   return response.data;

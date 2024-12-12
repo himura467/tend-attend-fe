@@ -35,3 +35,8 @@ export interface GetHostEventsResponse {
   events: EventWithId[];
   error_codes: number[];
 }
+
+export interface GetGuestEventsResponse {
+  events: EventWithId[];
+  error_codes: number[];
+}
