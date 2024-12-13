@@ -2,24 +2,14 @@
 
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
-import { parseYmdDate, parseYmdHm15Date, YmdDate, YmdHm15Date } from "@/lib/utils/date";
+import { parseYmdDate, parseYmdHm15Date } from "@/lib/utils/date";
 import { AttendanceStatus } from "@/lib/types/event/attendance";
 import { getGuestEvents } from "@/lib/api/events";
 import { attendEvent } from "@/lib/api/events";
 import { EventClickArg } from "@fullcalendar/core";
 import { Calendar } from "@/components/organisms/shared/events/Calendar";
 import { EventAttendanceForm } from "@/components/organisms/specific/events/attend/EventAttendanceForm";
-
-interface Event {
-  id: string;
-  summary: string;
-  location: string | null;
-  start: YmdDate | YmdHm15Date;
-  end: YmdDate | YmdHm15Date;
-  isAllDay: boolean;
-  recurrences: string[];
-  timezone: string;
-}
+import { Event, mapEventsToFullCalendar } from "@/lib/utils/fullcalendar";
 
 export const EventAttendanceCalendarForm = (): React.JSX.Element => {
   const { toast } = useToast();
@@ -110,7 +100,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
   return (
     <div className="flex h-screen">
       <div className="w-2/3 p-4">
-        <Calendar events={events} onEventClick={onEventClick} />
+        <Calendar events={mapEventsToFullCalendar(events)} onEventClick={onEventClick} />
       </div>
       <div className="w-1/3 p-4">
         <h1 className="mb-4 text-2xl font-bold">Event Attendance</h1>
