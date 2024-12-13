@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { createAuthToken } from "@/lib/api/hosts";
+import { createAuthToken } from "@/lib/api/auth";
 import { routerPush } from "@/lib/utils/router";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
