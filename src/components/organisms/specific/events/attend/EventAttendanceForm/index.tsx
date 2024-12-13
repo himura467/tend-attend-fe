@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { AttendanceStatus, AttendanceStatusRecord } from "@/lib/types/event/attendance";
 
