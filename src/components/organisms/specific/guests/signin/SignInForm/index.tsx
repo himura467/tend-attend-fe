@@ -18,7 +18,10 @@ interface SignInFormProps {
 export const SignInForm = ({ location }: SignInFormProps): React.JSX.Element => {
   const router = useRouter();
   const { toast } = useToast();
-  const [name, setName] = React.useState("");
+  const [guestFirstName, setGuestFirstName] = React.useState("");
+  const [guestLastName, setGuestLastName] = React.useState("");
+  const [guestNickname, setGuestNickname] = React.useState("");
+  const [hostName, setHostName] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
@@ -26,7 +29,13 @@ export const SignInForm = ({ location }: SignInFormProps): React.JSX.Element => 
 
     try {
       await createAuthToken({
-        username: JSON.stringify({ host_name: name, group: "host" }),
+        username: JSON.stringify({
+          guest_first_name: guestFirstName,
+          guest_last_name: guestLastName,
+          guest_nickname: guestNickname,
+          host_name: hostName,
+          group: "guest",
+        }),
         password: password,
       });
 
@@ -43,14 +52,47 @@ export const SignInForm = ({ location }: SignInFormProps): React.JSX.Element => 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div>
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="guest-first-name">Guest First Name</Label>
         <Input
-          id="name"
+          id="guest-first-name"
           type="text"
-          placeholder="Enter your name"
+          placeholder="Enter your first name"
           required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={guestFirstName}
+          onChange={(e) => setGuestFirstName(e.target.value)}
+        />
+      </div>
+      <div>
+        <Label htmlFor="guest-last-name">Guest Last Name</Label>
+        <Input
+          id="guest-last-name"
+          type="text"
+          placeholder="Enter your last name"
+          required
+          value={guestLastName}
+          onChange={(e) => setGuestLastName(e.target.value)}
+        />
+      </div>
+      <div>
+        <Label htmlFor="guest-nickname">Guest Nickname</Label>
+        <Input
+          id="guest-nickname"
+          type="text"
+          placeholder="Enter your nickname"
+          required
+          value={guestNickname}
+          onChange={(e) => setGuestNickname(e.target.value)}
+        />
+      </div>
+      <div>
+        <Label htmlFor="host-name">Host Name</Label>
+        <Input
+          id="host-name"
+          type="text"
+          placeholder="Enter your host name"
+          required
+          value={hostName}
+          onChange={(e) => setHostName(e.target.value)}
         />
       </div>
       <div>
