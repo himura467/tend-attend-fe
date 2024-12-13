@@ -3,33 +3,14 @@
 import React from "react";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import {
-  YmdDate,
-  YmdHm15Date,
-  parseYmdDate,
-  parseYmdHm15Date,
-  getCurrentYmdDate,
-  getYmdDeltaDays,
-  getYmdHm15DeltaMinutes,
-} from "@/lib/utils/date";
+import { parseYmdDate, parseYmdHm15Date, getCurrentYmdDate } from "@/lib/utils/date";
 import { applyTimezone } from "@/lib/utils/timezone";
 import { Calendar } from "@/components/organisms/shared/events/Calendar";
 import { CreateEventForm } from "@/components/organisms/specific/events/edit/CreateEventForm";
-import { startOfDay, endOfDay, addDays } from "date-fns";
+import { startOfDay, addDays } from "date-fns";
 import { createEvent, getHostEvents } from "@/lib/api/events";
-import { parseRecurrence } from "@/lib/utils/rfc5545";
 import { formSchema } from "@/components/organisms/specific/events/edit/CreateEventForm";
-
-interface Event {
-  id: string;
-  summary: string;
-  location: string | null;
-  start: YmdDate | YmdHm15Date;
-  end: YmdDate | YmdHm15Date;
-  isAllDay: boolean;
-  recurrences: string[];
-  timezone: string;
-}
+import { Event, mapEventsToFullCalendar } from "@/lib/utils/fullcalendar";
 
 export const EditEventsCalendarForm = (): React.JSX.Element => {
   const { toast } = useToast();
@@ -147,44 +128,6 @@ export const EditEventsCalendarForm = (): React.JSX.Element => {
       setStartDate(startOfDay(startDate));
       setEndDate(startOfDay(endDate));
     }
-  };
-
-  const mapEventsToFullCalendar = (events: Event[]) => {
-    return events.map((event) => {
-      const baseEvent = {
-        id: event.id,
-        title: event.summary,
-        start: event.isAllDay
-          ? event.start
-          : applyTimezone(event.start, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
-        end: event.isAllDay
-          ? endOfDay(event.end)
-          : applyTimezone(event.end, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
-        allDay: event.isAllDay,
-      };
-      const rrule = parseRecurrence(event.recurrences);
-      return rrule
-        ? {
-            id: baseEvent.id,
-            title: baseEvent.title,
-            allDay: baseEvent.allDay,
-            rrule: { ...rrule.options, dtstart: baseEvent.start },
-            duration: baseEvent.allDay
-              ? {
-                  days: getYmdDeltaDays(
-                    parseYmdDate(event.start, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
-                    parseYmdDate(event.end, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
-                  ),
-                }
-              : {
-                  minutes: getYmdHm15DeltaMinutes(
-                    parseYmdHm15Date(event.start, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
-                    parseYmdHm15Date(event.end, event.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone),
-                  ),
-                },
-          }
-        : baseEvent;
-    });
   };
 
   return (
