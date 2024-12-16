@@ -3,7 +3,7 @@
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { parseYmdDate, parseYmdHm15Date } from "@/lib/utils/date";
-import { AttendanceStatus } from "@/lib/types/event/attendance";
+import { AttendanceStatusType } from "@/lib/types/event/attendance";
 import { getGuestEvents } from "@/lib/api/events";
 import { attendEvent } from "@/lib/api/events";
 import { EventClickArg } from "@fullcalendar/core";
@@ -65,7 +65,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
     setSelectedEvent(eventInfo);
   };
 
-  const onSubmit = async (status: AttendanceStatus): Promise<void> => {
+  const onSubmit = async (status: AttendanceStatusType): Promise<void> => {
     if (!selectedEvent) {
       return;
     }
