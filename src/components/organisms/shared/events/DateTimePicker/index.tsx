@@ -130,9 +130,9 @@ export const DateTimePicker = ({
   return (
     <div className="flex flex-col space-y-4 rounded-lg border p-4">
       {!isAllDay && (
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2">
           <Clock className="h-5 w-5 text-muted-foreground" />
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -196,14 +196,14 @@ export const DateTimePicker = ({
           </div>
         </div>
       )}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2">
         <CalendarIcon className="h-5 w-5 text-muted-foreground" />
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1">
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className={cn("w-[150px] justify-start text-left font-normal", !startDate && "text-muted-foreground")}
+                className={cn("w-[120px] justify-start text-left font-normal", !startDate && "text-muted-foreground")}
               >
                 {format(startDate, "EEE MMM dd")}
               </Button>
@@ -222,7 +222,7 @@ export const DateTimePicker = ({
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className={cn("w-[150px] justify-start text-left font-normal", !endDate && "text-muted-foreground")}
+                className={cn("w-[120px] justify-start text-left font-normal", !endDate && "text-muted-foreground")}
               >
                 {format(endDate, "EEE MMM dd")}
               </Button>
@@ -238,11 +238,11 @@ export const DateTimePicker = ({
           </Popover>
         </div>
       </div>
-      <div className="flex items-center space-x-8 pt-4">
+      <div className="flex items-center space-x-4 pt-4">
         <div className="flex items-center space-x-2">
           <Switch id="all-day" checked={isAllDay} onCheckedChange={onIsAllDayChange} />
           <label htmlFor="all-day" className="text-sm text-muted-foreground">
-            All-day
+            {isAllDay ? "All day" : "Timed"}
           </label>
         </div>
         <Popover>
