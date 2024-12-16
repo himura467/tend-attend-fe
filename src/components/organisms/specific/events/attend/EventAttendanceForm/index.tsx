@@ -1,53 +1,60 @@
 import React from "react";
-import { AttendanceStatus, AttendanceStatusRecord } from "@/lib/types/event/attendance";
+import { AttendanceStatus, AttendanceStatusType, AttendanceStatusRecord } from "@/lib/types/event/attendance";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 interface EventAttendanceFormProps {
-  eventSummary: string;
-  onSubmit: (status: AttendanceStatus) => void;
-  onClose: () => void;
+  eventSummary: string | null;
+  onSubmit: (status: AttendanceStatusType) => Promise<void>;
 }
 
-export const EventAttendanceForm = ({
-  eventSummary,
-  onSubmit,
-  onClose,
-}: EventAttendanceFormProps): React.JSX.Element => {
-  const [status, setStatus] = React.useState<AttendanceStatus>(AttendanceStatus.PRESENT);
+export const EventAttendanceForm = ({ eventSummary, onSubmit }: EventAttendanceFormProps): React.JSX.Element => {
+  const [status, setStatus] = React.useState<AttendanceStatusType>(AttendanceStatus.PRESENT);
 
-  const handleSubmit = (e: React.FormEvent): void => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    onSubmit(status);
+    await onSubmit(status);
   };
 
   return (
-    <div className="bg-black fixed inset-0 flex items-center justify-center bg-opacity-50">
-      <div className="bg-white rounded-lg p-6 shadow-lg">
-        <h2 className="mb-4 text-xl font-bold">Attendance for: {eventSummary}</h2>
+    <Card>
+      <CardHeader>
+        <CardTitle>{eventSummary ? `Attendance for: ${eventSummary}` : "Select an event"}</CardTitle>
+      </CardHeader>
+      <CardContent>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="mb-2 block">Attendance Status:</label>
-            <select
-              className="rounded w-full border p-2"
-              value={status}
-              onChange={(e) => setStatus(Number(e.target.value) as AttendanceStatus)}
-            >
-              {Object.entries(AttendanceStatusRecord).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="status" className="text-right">
+                Status
+              </Label>
+              <Select
+                onValueChange={(value) => setStatus(Number(value) as AttendanceStatusType)}
+                defaultValue={status.toString()}
+                disabled={!eventSummary}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select attendance status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(AttendanceStatusRecord).map(([status, label]) => (
+                    <SelectItem key={status} value={status}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div className="flex justify-end space-x-2">
-            <button type="button" onClick={onClose} className="bg-gray-200 rounded hover:bg-gray-300 px-4 py-2">
-              Cancel
-            </button>
-            <button type="submit" className="bg-blue-500 text-white rounded hover:bg-blue-600 px-4 py-2">
+          <CardFooter className="px-0">
+            <Button type="submit" disabled={!eventSummary}>
               Submit
-            </button>
-          </div>
+            </Button>
+          </CardFooter>
         </form>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

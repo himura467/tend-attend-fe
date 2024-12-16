@@ -98,21 +98,13 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
   };
 
   return (
-    <div className="flex h-screen">
-      <div className="w-2/3 p-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="md:col-span-2">
         <Calendar events={mapEventsToFullCalendar(events)} onEventClick={onEventClick} />
       </div>
-      <div className="w-1/3 p-4">
-        <h1 className="mb-4 text-2xl font-bold">Event Attendance</h1>
-        <p>Click on an event to submit attendance.</p>
+      <div>
+        <EventAttendanceForm eventSummary={selectedEvent?.event.title || null} onSubmit={onSubmit} />
       </div>
-      {selectedEvent && (
-        <EventAttendanceForm
-          eventSummary={selectedEvent.event.title}
-          onSubmit={onSubmit}
-          onClose={() => setSelectedEvent(null)}
-        />
-      )}
     </div>
   );
 };

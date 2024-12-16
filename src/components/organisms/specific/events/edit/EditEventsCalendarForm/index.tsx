@@ -131,8 +131,8 @@ export const EditEventsCalendarForm = (): React.JSX.Element => {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <div>
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="md:col-span-2">
         <Calendar
           events={mapEventsToFullCalendar(events)}
           onEventClick={(info) => {
