@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_API_URL || "http://localhost:8000",
+  baseURL: "https://dubte1y7uk.execute-api.ap-northeast-1.amazonaws.com/",
   headers: {
     "Content-Type": "application/json",
   },
