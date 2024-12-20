@@ -6,6 +6,7 @@ import {
   AttendEventResponse,
   GetHostEventsResponse,
   GetGuestEventsResponse,
+  GetGuestCurrentAttendanceStatusResponse,
 } from "@/lib/api/dtos/event";
 
 export const createEvent = async (data: CreateEventRequest): Promise<CreateEventResponse> => {
@@ -15,8 +16,12 @@ export const createEvent = async (data: CreateEventRequest): Promise<CreateEvent
   return response.data;
 };
 
-export const attendEvent = async (data: AttendEventRequest): Promise<AttendEventResponse> => {
-  const response = await axiosInstance.put<AttendEventResponse>("/events/attend", data, {
+export const attendEvent = async (
+  data: AttendEventRequest,
+  eventId: string,
+  start: string,
+): Promise<AttendEventResponse> => {
+  const response = await axiosInstance.put<AttendEventResponse>(`/events/attend/${eventId}/${start}`, data, {
     withCredentials: true,
   });
   return response.data;
@@ -33,5 +38,18 @@ export const getGuestEvents = async (): Promise<GetGuestEventsResponse> => {
   const response = await axiosInstance.get<GetGuestEventsResponse>("/events/guests", {
     withCredentials: true,
   });
+  return response.data;
+};
+
+export const getGuestCurrentAttendanceStatus = async (
+  eventId: string,
+  start: string,
+): Promise<GetGuestCurrentAttendanceStatusResponse> => {
+  const response = await axiosInstance.get<GetGuestCurrentAttendanceStatusResponse>(
+    `/events/attend/current/${eventId}/${start}`,
+    {
+      withCredentials: true,
+    },
+  );
   return response.data;
 };

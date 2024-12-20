@@ -1,60 +1,82 @@
 import React from "react";
-import { AttendanceStatus, AttendanceStatusType, AttendanceStatusRecord } from "@/lib/types/event/attendance";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { getGuestCurrentAttendanceStatus, attendEvent } from "@/lib/api/events";
+import { useToast } from "@/hooks/use-toast";
+import { AttendanceActionType, AttendanceAction } from "@/lib/types/event/attendance";
 
 interface EventAttendanceFormProps {
+  eventId: string | null;
   eventSummary: string | null;
-  onSubmit: (status: AttendanceStatusType) => Promise<void>;
+  eventStartUTC: string | null;
 }
 
-export const EventAttendanceForm = ({ eventSummary, onSubmit }: EventAttendanceFormProps): React.JSX.Element => {
-  const [status, setStatus] = React.useState<AttendanceStatusType>(AttendanceStatus.PRESENT);
+export const EventAttendanceForm = ({
+  eventId,
+  eventSummary,
+  eventStartUTC,
+}: EventAttendanceFormProps): React.JSX.Element => {
+  const { toast } = useToast();
+  const [attend, setAttend] = React.useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault();
-    await onSubmit(status);
+  const fetchAttendanceStatus = React.useCallback(async (): Promise<void> => {
+    if (eventId && eventStartUTC) {
+      try {
+        const response = await getGuestCurrentAttendanceStatus(eventId, eventStartUTC);
+        setAttend(response.attend);
+      } catch {
+        toast({
+          title: "An error occurred",
+          description: "Failed to fetch attendance status",
+          variant: "destructive",
+        });
+      }
+    }
+  }, [eventId, eventStartUTC, toast]);
+
+  React.useEffect(() => {
+    if (eventId && eventStartUTC) {
+      void fetchAttendanceStatus();
+    } else {
+      setAttend(null);
+    }
+  }, [eventId, eventStartUTC, fetchAttendanceStatus]);
+
+  const handleSubmit = async (action: AttendanceActionType): Promise<void> => {
+    if (eventId && eventStartUTC) {
+      setIsLoading(true);
+      try {
+        await attendEvent({ action: action }, eventId, eventStartUTC);
+        await fetchAttendanceStatus();
+      } catch {
+        toast({
+          title: "An error occurred",
+          description: "Failed to update attendance status",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{eventSummary ? `Attendance for: ${eventSummary}` : "Select an event"}</CardTitle>
+        <CardTitle>{eventSummary ? `Attendance for ${eventSummary} at ${eventStartUTC}` : "Select an event"}</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="status" className="text-right">
-                Status
-              </Label>
-              <Select
-                onValueChange={(value) => setStatus(Number(value) as AttendanceStatusType)}
-                defaultValue={status.toString()}
-                disabled={!eventSummary}
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select attendance status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(AttendanceStatusRecord).map(([status, label]) => (
-                    <SelectItem key={status} value={status}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <CardFooter className="px-0">
-            <Button type="submit" disabled={!eventSummary}>
-              Submit
-            </Button>
-          </CardFooter>
-        </form>
+        {attend !== null && <p>{attend ? "You are attending this event" : "You are not attending this event"}</p>}
       </CardContent>
+      <CardFooter>
+        <Button
+          onClick={() => handleSubmit(attend ? AttendanceAction.LEAVE : AttendanceAction.ATTEND)}
+          disabled={!eventId || isLoading}
+        >
+          {isLoading ? "Processing..." : attend ? "Leave" : "Attend"}
+        </Button>
+      </CardFooter>
     </Card>
   );
 };
