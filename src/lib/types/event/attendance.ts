@@ -7,7 +7,7 @@ export type AttendanceActionType = (typeof AttendanceAction)[keyof typeof Attend
 
 // Attendance Status defined by CEDS
 // https://ceds.ed.gov/element/000076
-export const AttendanceStatus = {
+export const AttendanceState = {
   // 出席
   PRESENT: 0,
   // 連絡済み欠席
@@ -20,4 +20,4 @@ export const AttendanceStatus = {
   // EARLY_DEPARTURE: 4,
 } as const;
 
-export type AttendanceStatusType = (typeof AttendanceStatus)[keyof typeof AttendanceStatus];
+export type AttendanceStateType = (typeof AttendanceState)[keyof typeof AttendanceState];
