@@ -1,4 +1,4 @@
-import { AttendanceStatusType } from "@/lib/types/event/attendance";
+import { AttendanceActionType } from "@/lib/types/event/attendance";
 
 interface Event {
   summary: string;
@@ -23,8 +23,7 @@ export interface CreateEventResponse {
 }
 
 export interface AttendEventRequest {
-  event_id: string;
-  status: AttendanceStatusType;
+  action: AttendanceActionType;
 }
 
 export interface AttendEventResponse {
@@ -38,5 +37,10 @@ export interface GetHostEventsResponse {
 
 export interface GetGuestEventsResponse {
   events: EventWithId[];
+  error_codes: number[];
+}
+
+export interface GetGuestCurrentAttendanceStatusResponse {
+  attend: boolean;
   error_codes: number[];
 }
