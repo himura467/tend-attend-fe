@@ -1,3 +1,5 @@
+import { GenderType } from "@/lib/types/account/gender";
+
 export interface CreateHostAccountRequest {
   host_name: string;
   password: string;
@@ -12,6 +14,8 @@ export interface CreateGuestAccountRequest {
   guest_first_name: string;
   guest_last_name: string;
   guest_nickname: string | null;
+  age: number;
+  gender: GenderType;
   password: string;
   host_name: string;
 }

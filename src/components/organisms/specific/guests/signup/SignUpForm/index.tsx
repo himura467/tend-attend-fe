@@ -9,6 +9,8 @@ import { rr } from "@/lib/utils/reverse-router";
 import { routerPush } from "@/lib/utils/router";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { Gender, GenderType, GenderRecord } from "@/lib/types/account/gender";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const SignUpForm = (): React.JSX.Element => {
   const router = useRouter();
@@ -16,6 +18,8 @@ export const SignUpForm = (): React.JSX.Element => {
   const [guestFirstName, setGuestFirstName] = React.useState("");
   const [guestLastName, setGuestLastName] = React.useState("");
   const [guestNickname, setGuestNickname] = React.useState("");
+  const [guestAge, setGuestAge] = React.useState(0);
+  const [guestGender, setGuestGender] = React.useState<GenderType>(Gender.MALE);
   const [hostName, setHostName] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -27,6 +31,8 @@ export const SignUpForm = (): React.JSX.Element => {
         guest_first_name: guestFirstName,
         guest_last_name: guestLastName,
         guest_nickname: guestNickname,
+        age: guestAge,
+        gender: guestGender,
         password: password,
         host_name: hostName,
       });
@@ -83,6 +89,32 @@ export const SignUpForm = (): React.JSX.Element => {
           value={guestNickname}
           onChange={(e) => setGuestNickname(e.target.value)}
         />
+      </div>
+      <div>
+        <Label htmlFor="guest-age">Guest Age</Label>
+        <Input
+          id="guest-age"
+          type="number"
+          placeholder="Enter your age"
+          required
+          value={guestAge}
+          onChange={(e) => setGuestAge(parseInt(e.target.value, 10))}
+        />
+      </div>
+      <div>
+        <Label htmlFor="guest-gender">Guest Gender</Label>
+        <Select onValueChange={(value) => setGuestGender(value as GenderType)} defaultValue={guestGender}>
+          <SelectTrigger className="col-span-3">
+            <SelectValue placeholder="Select your gender" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(GenderRecord).map(([status, label]) => (
+              <SelectItem key={status} value={status}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div>
         <Label htmlFor="host-name">Host Name</Label>
