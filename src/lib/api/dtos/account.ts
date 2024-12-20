@@ -14,7 +14,7 @@ export interface CreateGuestAccountRequest {
   guest_first_name: string;
   guest_last_name: string;
   guest_nickname: string | null;
-  age: number;
+  birth_date: string;
   gender: GenderType;
   password: string;
   host_name: string;
