@@ -137,7 +137,7 @@ export const SignUpForm = (): React.JSX.Element => {
                 onValueChange={(value) =>
                   setGuestBirthDate(
                     new Date(
-                      Number(value),
+                      parseInt(value),
                       guestBirthDate ? guestBirthDate.getMonth() : getCurrentYmdDate(new Date()).getMonth(),
                       guestBirthDate ? guestBirthDate.getDate() : getCurrentYmdDate(new Date()).getDate(),
                     ),
@@ -165,7 +165,7 @@ export const SignUpForm = (): React.JSX.Element => {
                   setGuestBirthDate(
                     new Date(
                       guestBirthDate ? guestBirthDate.getFullYear() : getCurrentYmdDate(new Date()).getFullYear(),
-                      Number(value),
+                      parseInt(value),
                       guestBirthDate ? guestBirthDate.getDate() : getCurrentYmdDate(new Date()).getDate(),
                     ),
                   )
@@ -193,7 +193,7 @@ export const SignUpForm = (): React.JSX.Element => {
                     new Date(
                       guestBirthDate ? guestBirthDate.getFullYear() : getCurrentYmdDate(new Date()).getFullYear(),
                       guestBirthDate ? guestBirthDate.getMonth() : getCurrentYmdDate(new Date()).getMonth(),
-                      Number(value),
+                      parseInt(value),
                     ),
                   )
                 }
