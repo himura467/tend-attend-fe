@@ -18,6 +18,14 @@ export const ReverseRouter = {
       index: (): LinkProps => ({ href: "/guests/signin" }),
     },
   },
+  events: {
+    attend: {
+      index: (): LinkProps => ({ href: "/events/attend" }),
+    },
+    edit: {
+      index: (): LinkProps => ({ href: "/events/edit" }),
+    },
+  },
 };
 
 export const rr = ReverseRouter;
