@@ -21,7 +21,7 @@ const SignInPage: NextPage = (): React.JSX.Element => {
             </Link>
           </p>
         </div>
-        <SignInForm location={formatUrl(rr.index().href)} />
+        <SignInForm location={formatUrl(rr.events.edit.index().href)} />
       </div>
     </DialogTemplate>
   );
