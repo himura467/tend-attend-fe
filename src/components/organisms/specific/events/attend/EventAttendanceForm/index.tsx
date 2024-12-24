@@ -24,7 +24,15 @@ export const EventAttendanceForm = ({
     if (eventId && eventStartUTC) {
       try {
         const response = await getGuestCurrentAttendanceStatus(eventId, eventStartUTC);
-        setAttend(response.attend);
+        if (response.error_codes.length === 0) {
+          setAttend(response.attend);
+        } else {
+          toast({
+            title: "An error occurred",
+            description: "Request outside of available time",
+            variant: "destructive",
+          });
+        }
       } catch {
         toast({
           title: "An error occurred",
