@@ -8,7 +8,6 @@ import { EventClickArg } from "@fullcalendar/core";
 import { Calendar } from "@/components/organisms/shared/events/Calendar";
 import { EventAttendanceForm } from "@/components/organisms/specific/events/attend/EventAttendanceForm";
 import { Event, mapEventsToFullCalendar } from "@/lib/utils/fullcalendar";
-import { applyTimezone } from "@/lib/utils/timezone";
 
 export const EventAttendanceCalendarForm = (): React.JSX.Element => {
   const { toast } = useToast();
@@ -73,17 +72,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
         <EventAttendanceForm
           eventId={selectedEvent?.event.id || null}
           eventSummary={selectedEvent?.event.title || null}
-          eventStartUTC={
-            selectedEvent
-              ? selectedEvent.event.start
-                ? applyTimezone(
-                    selectedEvent.event.start,
-                    Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    "UTC",
-                  ).toISOString()
-                : null
-              : null
-          }
+          eventStart={selectedEvent?.event.start || null}
         />
       </div>
     </div>
