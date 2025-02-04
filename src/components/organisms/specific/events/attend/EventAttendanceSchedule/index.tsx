@@ -37,6 +37,7 @@ export const EventAttendanceSchedule = ({
   };
 
   const getUserAttendanceClass = (ua: UserAttendance) => {
+    // TODO: 色を動的に決める
     console.log(ua);
     return "bg-accent";
   };
