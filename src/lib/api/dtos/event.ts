@@ -30,12 +30,12 @@ export interface AttendEventResponse {
   error_codes: number[];
 }
 
-export interface GetHostEventsResponse {
+export interface GetMyEventsResponse {
   events: EventWithId[];
   error_codes: number[];
 }
 
-export interface GetGuestEventsResponse {
+export interface GetFollowingEventsResponse {
   events: EventWithId[];
   error_codes: number[];
 }

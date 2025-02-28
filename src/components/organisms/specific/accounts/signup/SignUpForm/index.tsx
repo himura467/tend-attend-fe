@@ -4,7 +4,7 @@ import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createGuestAccount } from "@/lib/api/guests";
+import { createUserAccount } from "@/lib/api/accounts";
 import { rr } from "@/lib/utils/reverse-router";
 import { routerPush } from "@/lib/utils/router";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,9 @@ import { getCurrentYmdDate } from "@/lib/utils/date";
 import { applyTimezone } from "@/lib/utils/timezone";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { X } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 const years = Array.from({ length: 100 }, (_, i) => getCurrentYmdDate(new Date()).getFullYear() - i);
 const months = [
@@ -36,30 +39,27 @@ const months = [
 export const SignUpForm = (): React.JSX.Element => {
   const router = useRouter();
   const { toast } = useToast();
-  const [guestFirstName, setGuestFirstName] = React.useState("");
-  const [guestLastName, setGuestLastName] = React.useState("");
-  const [guestNickname, setGuestNickname] = React.useState("");
-  const [guestBirthDate, setGuestBirthDate] = React.useState<Date | null>(null);
-  const [guestGender, setGuestGender] = React.useState<GenderType>(Gender.MALE);
-  const [hostName, setHostName] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [nickname, setNickname] = React.useState("");
+  const [birthDate, setBirthDate] = React.useState<Date | null>(null);
+  const [gender, setGender] = React.useState<GenderType>(Gender.MALE);
+  const [email, setEmail] = React.useState("");
+  const [followeeUsernames, setFolloweeUsernames] = React.useState<string[]>([]);
+  const [followeeInput, setFolloweeInput] = React.useState("");
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     try {
-      const response = await createGuestAccount({
-        guest_first_name: guestFirstName,
-        guest_last_name: guestLastName,
-        guest_nickname: guestNickname,
-        birth_date: applyTimezone(
-          guestBirthDate!,
-          Intl.DateTimeFormat().resolvedOptions().timeZone,
-          "UTC",
-        ).toISOString(),
-        gender: guestGender,
+      const response = await createUserAccount({
+        username: username,
         password: password,
-        host_name: hostName,
+        nickname: nickname,
+        birth_date: applyTimezone(birthDate!, Intl.DateTimeFormat().resolvedOptions().timeZone, "UTC").toISOString(),
+        gender: gender,
+        email: email,
+        followee_usernames: followeeUsernames,
       });
 
       if (response.error_codes.length > 0) {
@@ -69,7 +69,7 @@ export const SignUpForm = (): React.JSX.Element => {
           variant: "destructive",
         });
       } else {
-        routerPush(rr.guests.signin.index(), router);
+        routerPush(rr.signin.index(), router);
       }
     } catch {
       toast({
@@ -80,66 +80,77 @@ export const SignUpForm = (): React.JSX.Element => {
     }
   };
 
+  const handleAddFollowee = () => {
+    if (followeeInput.trim() && !followeeUsernames.includes(followeeInput.trim())) {
+      setFolloweeUsernames([...followeeUsernames, followeeInput.trim()]);
+      setFolloweeInput("");
+    }
+  };
+
+  const handleRemoveFollowee = (username: string) => {
+    setFolloweeUsernames(followeeUsernames.filter((name) => name !== username));
+  };
+
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div>
-        <Label htmlFor="guest-first-name">Guest First Name</Label>
+        <Label htmlFor="username">Username</Label>
         <Input
-          id="guest-first-name"
+          id="username"
           type="text"
-          placeholder="Enter your first name"
+          placeholder="Enter your username"
           required
-          value={guestFirstName}
-          onChange={(e) => setGuestFirstName(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
       </div>
       <div>
-        <Label htmlFor="guest-last-name">Guest Last Name</Label>
+        <Label htmlFor="nickname">Nickname</Label>
         <Input
-          id="guest-last-name"
-          type="text"
-          placeholder="Enter your last name"
-          required
-          value={guestLastName}
-          onChange={(e) => setGuestLastName(e.target.value)}
-        />
-      </div>
-      <div>
-        <Label htmlFor="guest-nickname">Guest Nickname</Label>
-        <Input
-          id="guest-nickname"
+          id="nickname"
           type="text"
           placeholder="Enter your nickname"
           required
-          value={guestNickname}
-          onChange={(e) => setGuestNickname(e.target.value)}
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
         />
       </div>
       <div>
-        <Label htmlFor="guest-birth-date">Guest Birth Date</Label>
+        <Label htmlFor="email">Email Address</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="name@example.com"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <div>
+        <Label htmlFor="birth-date">Birth Date</Label>
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className={cn("w-full text-left font-normal", !guestBirthDate && "text-muted-foreground")}
+              className={cn("w-full text-left font-normal", !birthDate && "text-muted-foreground")}
             >
-              {guestBirthDate ? format(guestBirthDate, "yyyy-MM-dd") : "Select your birth date"}
+              {birthDate ? format(birthDate, "yyyy-MM-dd") : "Select your birth date"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[400px]">
             <div className="flex items-center justify-between p-2">
               <Select
                 value={
-                  guestBirthDate
-                    ? guestBirthDate.getFullYear().toString()
+                  birthDate
+                    ? birthDate.getFullYear().toString()
                     : getCurrentYmdDate(new Date()).getFullYear().toString()
                 }
                 onValueChange={(value) =>
-                  setGuestBirthDate(
+                  setBirthDate(
                     new Date(
                       parseInt(value),
-                      guestBirthDate ? guestBirthDate.getMonth() : getCurrentYmdDate(new Date()).getMonth(),
-                      guestBirthDate ? guestBirthDate.getDate() : getCurrentYmdDate(new Date()).getDate(),
+                      birthDate ? birthDate.getMonth() : getCurrentYmdDate(new Date()).getMonth(),
+                      birthDate ? birthDate.getDate() : getCurrentYmdDate(new Date()).getDate(),
                     ),
                   )
                 }
@@ -157,16 +168,14 @@ export const SignUpForm = (): React.JSX.Element => {
               </Select>
               <Select
                 value={
-                  guestBirthDate
-                    ? guestBirthDate.getMonth().toString()
-                    : getCurrentYmdDate(new Date()).getMonth().toString()
+                  birthDate ? birthDate.getMonth().toString() : getCurrentYmdDate(new Date()).getMonth().toString()
                 }
                 onValueChange={(value) =>
-                  setGuestBirthDate(
+                  setBirthDate(
                     new Date(
-                      guestBirthDate ? guestBirthDate.getFullYear() : getCurrentYmdDate(new Date()).getFullYear(),
+                      birthDate ? birthDate.getFullYear() : getCurrentYmdDate(new Date()).getFullYear(),
                       parseInt(value),
-                      guestBirthDate ? guestBirthDate.getDate() : getCurrentYmdDate(new Date()).getDate(),
+                      birthDate ? birthDate.getDate() : getCurrentYmdDate(new Date()).getDate(),
                     ),
                   )
                 }
@@ -183,16 +192,12 @@ export const SignUpForm = (): React.JSX.Element => {
                 </SelectContent>
               </Select>
               <Select
-                value={
-                  guestBirthDate
-                    ? guestBirthDate.getDate().toString()
-                    : getCurrentYmdDate(new Date()).getDate().toString()
-                }
+                value={birthDate ? birthDate.getDate().toString() : getCurrentYmdDate(new Date()).getDate().toString()}
                 onValueChange={(value) =>
-                  setGuestBirthDate(
+                  setBirthDate(
                     new Date(
-                      guestBirthDate ? guestBirthDate.getFullYear() : getCurrentYmdDate(new Date()).getFullYear(),
-                      guestBirthDate ? guestBirthDate.getMonth() : getCurrentYmdDate(new Date()).getMonth(),
+                      birthDate ? birthDate.getFullYear() : getCurrentYmdDate(new Date()).getFullYear(),
+                      birthDate ? birthDate.getMonth() : getCurrentYmdDate(new Date()).getMonth(),
                       parseInt(value),
                     ),
                   )
@@ -214,8 +219,8 @@ export const SignUpForm = (): React.JSX.Element => {
         </Popover>
       </div>
       <div>
-        <Label htmlFor="guest-gender">Guest Gender</Label>
-        <Select onValueChange={(value) => setGuestGender(value as GenderType)} defaultValue={guestGender}>
+        <Label htmlFor="gender">Gender</Label>
+        <Select onValueChange={(value) => setGender(value as GenderType)} defaultValue={gender}>
           <SelectTrigger className="col-span-3">
             <SelectValue placeholder="Select your gender" />
           </SelectTrigger>
@@ -229,17 +234,6 @@ export const SignUpForm = (): React.JSX.Element => {
         </Select>
       </div>
       <div>
-        <Label htmlFor="host-name">Host Name</Label>
-        <Input
-          id="host-name"
-          type="text"
-          placeholder="Enter your host name"
-          required
-          value={hostName}
-          onChange={(e) => setHostName(e.target.value)}
-        />
-      </div>
-      <div>
         <Label htmlFor="password">Password</Label>
         <Input
           id="password"
@@ -249,6 +243,51 @@ export const SignUpForm = (): React.JSX.Element => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+      </div>
+      <div>
+        <Label htmlFor="followee-usernames">Follow users</Label>
+        <div className="flex gap-2">
+          <Input
+            id="followee-usernames"
+            type="text"
+            placeholder="Enter username to follow"
+            value={followeeInput}
+            onChange={(e) => setFolloweeInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAddFollowee();
+              }
+            }}
+          />
+          <Button type="button" variant="secondary" onClick={handleAddFollowee}>
+            Add
+          </Button>
+        </div>
+        {followeeUsernames.length > 0 && (
+          <div className="mt-2">
+            <p className="mb-1 text-sm text-muted-foreground">Users to follow:</p>
+            <ScrollArea className="h-auto max-h-[100px]">
+              <div className="flex flex-wrap gap-2 p-1">
+                {followeeUsernames.map((name) => (
+                  <Badge key={name} variant="secondary" className="flex items-center gap-1 py-1 pl-2 pr-1">
+                    {name}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full h-4 w-4"
+                      onClick={() => handleRemoveFollowee(name)}
+                    >
+                      <X className="h-3 w-3" />
+                      <span className="sr-only">Remove {name}</span>
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
       </div>
       <Button type="submit" className="w-full">
         Create account

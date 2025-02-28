@@ -21,3 +21,15 @@ export const AttendanceState = {
 } as const;
 
 export type AttendanceStateType = (typeof AttendanceState)[keyof typeof AttendanceState];
+
+export interface UserAttendance {
+  userId: number;
+  attendedAt: Date;
+  leftAt: Date;
+}
+
+export interface Attendance {
+  id: string;
+  userName: string;
+  userAttendances: UserAttendance[];
+}
