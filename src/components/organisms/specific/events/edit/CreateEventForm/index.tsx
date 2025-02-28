@@ -100,7 +100,7 @@ export const CreateEventForm = ({
             onTimezoneChange={onTimezoneChange}
           />
         </div>
-        <Button type="submit">Create Event</Button>
+        <Button type="submit">Create event</Button>
       </form>
     </Form>
   );

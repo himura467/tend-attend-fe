@@ -3,7 +3,7 @@
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { parseYmdDate, parseYmdHm15Date } from "@/lib/utils/date";
-import { getGuestEvents } from "@/lib/api/events";
+import { getFollowingEvents } from "@/lib/api/events";
 import { EventClickArg } from "@fullcalendar/core";
 import { Calendar } from "@/components/organisms/shared/events/Calendar";
 import { EventAttendanceForm } from "@/components/organisms/specific/events/attend/EventAttendanceForm";
@@ -18,7 +18,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
 
   const fetchEvents = React.useCallback(async () => {
     try {
-      const response = await getGuestEvents();
+      const response = await getFollowingEvents();
       if (response.error_codes.length === 0) {
         setEvents(
           response.events.map((event) => {
