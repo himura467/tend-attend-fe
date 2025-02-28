@@ -1,45 +1,39 @@
 "use client";
 
+import Link from "next/link";
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createHostAccount } from "@/lib/api/hosts";
-import { rr } from "@/lib/utils/reverse-router";
+import { createAuthToken } from "@/lib/api/auth";
 import { routerPush } from "@/lib/utils/router";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
-export const SignUpForm = (): React.JSX.Element => {
+interface SignInFormProps {
+  location: string;
+}
+
+export const SignInForm = ({ location }: SignInFormProps): React.JSX.Element => {
   const router = useRouter();
   const { toast } = useToast();
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     try {
-      const response = await createHostAccount({
-        host_name: name,
+      await createAuthToken({
+        username: username,
         password: password,
-        email: email,
       });
 
-      if (response.error_codes.length > 0) {
-        toast({
-          title: "An error occurred",
-          description: "Failed to create an account",
-          variant: "destructive",
-        });
-      } else {
-        routerPush(rr.hosts.signin.index(), router);
-      }
+      routerPush({ href: location }, router);
     } catch {
       toast({
         title: "An error occurred",
-        description: "Failed to create an account",
+        description: "Failed to sign in",
         variant: "destructive",
       });
     }
@@ -48,25 +42,14 @@ export const SignUpForm = (): React.JSX.Element => {
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div>
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="username">Username</Label>
         <Input
-          id="name"
+          id="username"
           type="text"
-          placeholder="Enter your name"
+          placeholder="Enter your username"
           required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-      <div>
-        <Label htmlFor="email">Email address</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="name@example.com"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
       </div>
       <div>
@@ -80,8 +63,11 @@ export const SignUpForm = (): React.JSX.Element => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
+      <Link href="/forgot-password" className="text-sm font-medium text-primary hover:text-primary/80">
+        Forgot your password?
+      </Link>
       <Button type="submit" className="w-full">
-        Create account
+        Sign in
       </Button>
     </form>
   );

@@ -8,7 +8,7 @@ import { applyTimezone } from "@/lib/utils/timezone";
 import { Calendar } from "@/components/organisms/shared/events/Calendar";
 import { CreateEventForm } from "@/components/organisms/specific/events/edit/CreateEventForm";
 import { startOfDay, addDays } from "date-fns";
-import { createEvent, getHostEvents } from "@/lib/api/events";
+import { createEvent, getMyEvents } from "@/lib/api/events";
 import { formSchema } from "@/components/organisms/specific/events/edit/CreateEventForm";
 import { Event, mapEventsToFullCalendar } from "@/lib/utils/fullcalendar";
 
@@ -23,7 +23,7 @@ export const EditEventsCalendarForm = (): React.JSX.Element => {
 
   const fetchEvents = React.useCallback(async () => {
     try {
-      const response = await getHostEvents();
+      const response = await getMyEvents();
       if (response.error_codes.length === 0) {
         setEvents(
           response.events.map((event) => {

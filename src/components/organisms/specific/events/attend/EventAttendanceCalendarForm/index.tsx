@@ -3,12 +3,13 @@
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { parseYmdDate, parseYmdHm15Date } from "@/lib/utils/date";
-import { getGuestEvents } from "@/lib/api/events";
+import { getFollowingEvents } from "@/lib/api/events";
 import { EventClickArg } from "@fullcalendar/core";
 import { Calendar } from "@/components/organisms/shared/events/Calendar";
 import { EventAttendanceForm } from "@/components/organisms/specific/events/attend/EventAttendanceForm";
 import { Event, mapEventsToFullCalendar } from "@/lib/utils/fullcalendar";
-import { applyTimezone } from "@/lib/utils/timezone";
+import { EventAttendanceSchedule } from "@/components/organisms/specific/events/attend/EventAttendanceSchedule";
+import { Attendance } from "@/lib/types/event/attendance";
 
 export const EventAttendanceCalendarForm = (): React.JSX.Element => {
   const { toast } = useToast();
@@ -17,7 +18,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
 
   const fetchEvents = React.useCallback(async () => {
     try {
-      const response = await getGuestEvents();
+      const response = await getFollowingEvents();
       if (response.error_codes.length === 0) {
         setEvents(
           response.events.map((event) => {
@@ -64,27 +65,52 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
     setSelectedEvent(eventInfo);
   };
 
+  const dummyAttendances = (eventStart: Date): Attendance[] => {
+    return [
+      {
+        id: "1",
+        userName: "John Doe",
+        userAttendances: [
+          {
+            userId: 1,
+            attendedAt: new Date(eventStart.getTime() + 1000 * 60 * 60),
+            leftAt: new Date(eventStart.getTime() + 1000 * 60 * 60 * 2),
+          },
+        ],
+      },
+      {
+        id: "2",
+        userName: "Jane Doe",
+        userAttendances: [
+          {
+            userId: 2,
+            attendedAt: new Date(eventStart.getTime() + 1000 * 60 * 60 * 3),
+            leftAt: new Date(eventStart.getTime() + 1000 * 60 * 60 * 4),
+          },
+        ],
+      },
+    ];
+  };
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       <div className="md:col-span-2">
         <Calendar events={mapEventsToFullCalendar(events)} onEventClick={onEventClick} />
       </div>
-      <div>
+      <div className="space-y-4">
         <EventAttendanceForm
           eventId={selectedEvent?.event.id || null}
           eventSummary={selectedEvent?.event.title || null}
-          eventStartUTC={
-            selectedEvent
-              ? selectedEvent.event.start
-                ? applyTimezone(
-                    selectedEvent.event.start,
-                    Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    "UTC",
-                  ).toISOString()
-                : null
-              : null
-          }
+          eventStart={selectedEvent?.event.start || null}
         />
+        {selectedEvent?.event.start && selectedEvent?.event.end && selectedEvent?.event.allDay && (
+          <EventAttendanceSchedule
+            eventStart={selectedEvent?.event.start}
+            eventEnd={selectedEvent?.event.end}
+            isEventAllDay={selectedEvent?.event.allDay}
+            attendances={dummyAttendances(selectedEvent?.event.start)}
+          />
+        )}
       </div>
     </div>
   );
