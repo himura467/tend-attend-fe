@@ -16,6 +16,9 @@ import { getCurrentYmdDate } from "@/lib/utils/date";
 import { applyTimezone } from "@/lib/utils/timezone";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { X } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 const years = Array.from({ length: 100 }, (_, i) => getCurrentYmdDate(new Date()).getFullYear() - i);
 const months = [
@@ -42,6 +45,8 @@ export const SignUpForm = (): React.JSX.Element => {
   const [birthDate, setBirthDate] = React.useState<Date | null>(null);
   const [gender, setGender] = React.useState<GenderType>(Gender.MALE);
   const [email, setEmail] = React.useState("");
+  const [followeeUsernames, setFolloweeUsernames] = React.useState<string[]>([]);
+  const [followeeInput, setFolloweeInput] = React.useState("");
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
@@ -54,7 +59,7 @@ export const SignUpForm = (): React.JSX.Element => {
         birth_date: applyTimezone(birthDate!, Intl.DateTimeFormat().resolvedOptions().timeZone, "UTC").toISOString(),
         gender: gender,
         email: email,
-        followee_usernames: [],
+        followee_usernames: followeeUsernames,
       });
 
       if (response.error_codes.length > 0) {
@@ -73,6 +78,17 @@ export const SignUpForm = (): React.JSX.Element => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleAddFollowee = () => {
+    if (followeeInput.trim() && !followeeUsernames.includes(followeeInput.trim())) {
+      setFolloweeUsernames([...followeeUsernames, followeeInput.trim()]);
+      setFolloweeInput("");
+    }
+  };
+
+  const handleRemoveFollowee = (username: string) => {
+    setFolloweeUsernames(followeeUsernames.filter((name) => name !== username));
   };
 
   return (
@@ -227,6 +243,51 @@ export const SignUpForm = (): React.JSX.Element => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+      </div>
+      <div>
+        <Label htmlFor="followee-usernames">Follow users</Label>
+        <div className="flex gap-2">
+          <Input
+            id="followee-usernames"
+            type="text"
+            placeholder="Enter username to follow"
+            value={followeeInput}
+            onChange={(e) => setFolloweeInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAddFollowee();
+              }
+            }}
+          />
+          <Button type="button" variant="secondary" onClick={handleAddFollowee}>
+            Add
+          </Button>
+        </div>
+        {followeeUsernames.length > 0 && (
+          <div className="mt-2">
+            <p className="mb-1 text-sm text-muted-foreground">Users to follow:</p>
+            <ScrollArea className="h-auto max-h-[100px]">
+              <div className="flex flex-wrap gap-2 p-1">
+                {followeeUsernames.map((name) => (
+                  <Badge key={name} variant="secondary" className="flex items-center gap-1 py-1 pl-2 pr-1">
+                    {name}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full h-4 w-4"
+                      onClick={() => handleRemoveFollowee(name)}
+                    >
+                      <X className="h-3 w-3" />
+                      <span className="sr-only">Remove {name}</span>
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
       </div>
       <Button type="submit" className="w-full">
         Create account
