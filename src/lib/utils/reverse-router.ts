@@ -2,21 +2,11 @@ import { LinkProps } from "next/link";
 
 export const ReverseRouter = {
   index: (): LinkProps => ({ href: "/" }),
-  hosts: {
-    signup: {
-      index: (): LinkProps => ({ href: "/hosts/signup" }),
-    },
-    signin: {
-      index: (): LinkProps => ({ href: "/hosts/signin" }),
-    },
+  signup: {
+    index: (): LinkProps => ({ href: "/signup" }),
   },
-  guests: {
-    signup: {
-      index: (): LinkProps => ({ href: "/guests/signup" }),
-    },
-    signin: {
-      index: (): LinkProps => ({ href: "/guests/signin" }),
-    },
+  signin: {
+    index: (): LinkProps => ({ href: "/signin" }),
   },
   events: {
     attend: {
