@@ -14,10 +14,15 @@ interface EventWithId extends Event {
   id: string;
 }
 
-export interface AttendanceTime {
+interface AttendanceTimeForecast {
   start: string;
   attended_at: string;
   duration: number;
+}
+
+export interface AttendanceTimeForecastsWithUsername {
+  username: string;
+  attendance_time_forecasts: AttendanceTimeForecast[];
 }
 
 export interface CreateEventRequest {
@@ -52,10 +57,10 @@ export interface GetGuestCurrentAttendanceStatusResponse {
 }
 
 export interface GetAttendanceTimeForecastsResponse {
-  user_id: number;
-  username: string;
-  attendance_time_forecasts: {
-    [key: string]: AttendanceTime[];
+  attendance_time_forecasts_with_username: {
+    [event_id: string]: {
+      [user_id: number]: AttendanceTimeForecastsWithUsername;
+    };
   };
   error_codes: number[];
 }
