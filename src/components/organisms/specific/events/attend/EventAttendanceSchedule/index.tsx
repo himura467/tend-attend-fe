@@ -45,7 +45,7 @@ export const EventAttendanceSchedule = ({
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Attendance Forecast</CardTitle>
+        <CardTitle>Attendance Forecasts</CardTitle>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[calc(100vh-200px)]">
