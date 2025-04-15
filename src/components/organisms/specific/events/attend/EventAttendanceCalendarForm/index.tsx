@@ -4,7 +4,7 @@ import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { parseYmdDate, parseYmdHm15Date } from "@/lib/utils/date";
 import { getFollowingEvents, getAttendanceTimeForecasts } from "@/lib/api/events";
-import { AttendanceTime } from "@/lib/api/dtos/event";
+import { AttendanceTimeForecastsWithUsername } from "@/lib/api/dtos/event";
 import { EventClickArg } from "@fullcalendar/core";
 import { Calendar } from "@/components/organisms/shared/events/Calendar";
 import { EventAttendanceForm } from "@/components/organisms/specific/events/attend/EventAttendanceForm";
@@ -17,10 +17,10 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
   const { toast } = useToast();
   const [events, setEvents] = React.useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = React.useState<EventClickArg | null>(null);
-  const [userId, setUserId] = React.useState<number | null>(null);
-  const [username, setUsername] = React.useState<string | null>(null);
-  const [attendanceTimeForecasts, setAttendanceTimeForecasts] = React.useState<{
-    [key: string]: AttendanceTime[];
+  const [attendanceTimeForecastsWithUsername, setAttendanceTimeForecastsWithUsername] = React.useState<{
+    [event_id: string]: {
+      [user_id: number]: AttendanceTimeForecastsWithUsername;
+    };
   }>({});
 
   const fetchEvents = React.useCallback(async () => {
@@ -68,9 +68,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
     try {
       const response = await getAttendanceTimeForecasts();
       if (response.error_codes.length === 0) {
-        setUserId(response.user_id);
-        setUsername(response.username);
-        setAttendanceTimeForecasts(response.attendance_time_forecasts);
+        setAttendanceTimeForecastsWithUsername(response.attendance_time_forecasts_with_username);
       } else {
         toast({
           title: "An error occurred",
@@ -97,35 +95,27 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
   };
 
   const getAttendances = (eventId: string, eventStart: Date): Attendance[] => {
-    if (!attendanceTimeForecasts[eventId]) return [];
+    const eventAttendances = attendanceTimeForecastsWithUsername[eventId];
+    if (!eventAttendances) return [];
 
-    const forecasts = attendanceTimeForecasts[eventId].filter(
-      (forecast) =>
-        applyTimezone(
-          new Date(Date.parse(forecast.start)),
-          "UTC",
-          Intl.DateTimeFormat().resolvedOptions().timeZone,
-        ).getTime() === eventStart.getTime(),
-    );
-
-    return forecasts.map((forecast, index) => ({
-      id: index.toString(),
-      userName: username!,
-      userAttendances: [
-        {
-          userId: userId!,
-          attendedAt: applyTimezone(
-            new Date(Date.parse(forecast.attended_at)),
-            "UTC",
-            Intl.DateTimeFormat().resolvedOptions().timeZone,
-          ),
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    return Object.entries(eventAttendances).map(([userId, userForecast]) => ({
+      id: userId,
+      userName: userForecast.username,
+      userAttendances: userForecast.attendance_time_forecasts
+        .filter(
+          (forecast) =>
+            applyTimezone(new Date(Date.parse(forecast.start)), "UTC", tz).getTime() === eventStart.getTime(),
+        )
+        .map((forecast) => ({
+          userId: parseInt(userId),
+          attendedAt: applyTimezone(new Date(Date.parse(forecast.attended_at)), "UTC", tz),
           leftAt: applyTimezone(
             new Date(new Date(Date.parse(forecast.attended_at)).getTime() + forecast.duration * 1000),
             "UTC",
-            Intl.DateTimeFormat().resolvedOptions().timeZone,
+            tz,
           ),
-        },
-      ],
+        })),
     }));
   };
 
@@ -140,14 +130,17 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
           eventSummary={selectedEvent?.event.title || null}
           eventStart={selectedEvent?.event.start || null}
         />
-        {selectedEvent?.event.start && selectedEvent?.event.end && selectedEvent?.event.allDay && (
-          <EventAttendanceSchedule
-            eventStart={selectedEvent?.event.start}
-            eventEnd={selectedEvent?.event.end}
-            isEventAllDay={selectedEvent?.event.allDay}
-            attendances={getAttendances(selectedEvent?.event.id, selectedEvent?.event.start)}
-          />
-        )}
+        {selectedEvent?.event.id &&
+          selectedEvent?.event.start &&
+          selectedEvent?.event.end &&
+          selectedEvent?.event.allDay && (
+            <EventAttendanceSchedule
+              eventStart={selectedEvent?.event.start}
+              eventEnd={selectedEvent?.event.end}
+              isEventAllDay={selectedEvent?.event.allDay}
+              attendances={getAttendances(selectedEvent?.event.id, selectedEvent?.event.start)}
+            />
+          )}
       </div>
     </div>
   );
