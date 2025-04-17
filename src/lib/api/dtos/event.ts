@@ -14,6 +14,17 @@ interface EventWithId extends Event {
   id: string;
 }
 
+interface AttendanceTimeForecast {
+  start: string;
+  attended_at: string;
+  duration: number;
+}
+
+export interface AttendanceTimeForecastsWithUsername {
+  username: string;
+  attendance_time_forecasts: AttendanceTimeForecast[];
+}
+
 export interface CreateEventRequest {
   event: Event;
 }
@@ -42,5 +53,14 @@ export interface GetFollowingEventsResponse {
 
 export interface GetGuestCurrentAttendanceStatusResponse {
   attend: boolean;
+  error_codes: number[];
+}
+
+export interface GetAttendanceTimeForecastsResponse {
+  attendance_time_forecasts_with_username: {
+    [event_id: string]: {
+      [user_id: number]: AttendanceTimeForecastsWithUsername;
+    };
+  };
   error_codes: number[];
 }

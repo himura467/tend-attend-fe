@@ -7,6 +7,7 @@ import {
   GetMyEventsResponse,
   GetFollowingEventsResponse,
   GetGuestCurrentAttendanceStatusResponse,
+  GetAttendanceTimeForecastsResponse,
 } from "@/lib/api/dtos/event";
 
 export const createEvent = async (data: CreateEventRequest): Promise<CreateEventResponse> => {
@@ -51,5 +52,12 @@ export const getGuestCurrentAttendanceStatus = async (
       withCredentials: true,
     },
   );
+  return response.data;
+};
+
+export const getAttendanceTimeForecasts = async (): Promise<GetAttendanceTimeForecastsResponse> => {
+  const response = await axiosInstance.get<GetAttendanceTimeForecastsResponse>(`/events/attend/forecast`, {
+    withCredentials: true,
+  });
   return response.data;
 };
