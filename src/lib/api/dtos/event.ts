@@ -14,6 +14,11 @@ interface EventWithId extends Event {
   id: string;
 }
 
+interface Attendance {
+  action: AttendanceActionType;
+  acted_at: string;
+}
+
 interface AttendanceTimeForecast {
   start: string;
   attended_at: string;
@@ -38,6 +43,11 @@ export interface AttendEventRequest {
 }
 
 export interface AttendEventResponse {
+  error_codes: number[];
+}
+
+export interface GetAttendanceHistoryResponse {
+  attendances: Attendance[];
   error_codes: number[];
 }
 
