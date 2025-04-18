@@ -51,7 +51,7 @@ export interface GetFollowingEventsResponse {
   error_codes: number[];
 }
 
-export interface GetGuestCurrentAttendanceStatusResponse {
+export interface GetGuestAttendanceStatusResponse {
   attend: boolean;
   error_codes: number[];
 }
