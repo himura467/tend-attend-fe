@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getGuestCurrentAttendanceStatus, attendEvent } from "@/lib/api/events";
+import { getGuestAttendanceStatus, attendEvent } from "@/lib/api/events";
 import { useToast } from "@/hooks/use-toast";
 import { AttendanceActionType, AttendanceAction } from "@/lib/types/event/attendance";
 import { applyTimezone } from "@/lib/utils/timezone";
@@ -28,7 +28,7 @@ export const EventAttendanceForm = ({
   const fetchAttendanceStatus = React.useCallback(async (): Promise<void> => {
     if (eventId && eventStartUTC) {
       try {
-        const response = await getGuestCurrentAttendanceStatus(eventId, eventStartUTC.toISOString());
+        const response = await getGuestAttendanceStatus(eventId, eventStartUTC.toISOString());
         if (response.error_codes.length === 0) {
           setAttend(response.attend);
         } else {
