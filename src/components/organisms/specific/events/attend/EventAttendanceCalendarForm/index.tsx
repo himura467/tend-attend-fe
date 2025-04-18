@@ -101,9 +101,9 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
         // イベント開始時刻が現在時刻以前の場合、履歴から取得
         setIsForecast(false);
 
-        const history = await getAttendanceHistory(eventId, applyTimezone(eventStart, tz, "UTC").toISOString());
-        const attendLogs = history.attendances.filter((a) => a.action === "attend");
-        const leaveLogs = history.attendances.filter((a) => a.action === "leave");
+        const response = await getAttendanceHistory(eventId, applyTimezone(eventStart, tz, "UTC").toISOString());
+        const attendLogs = response.attendances_with_username.attendances.filter((a) => a.action === "attend");
+        const leaveLogs = response.attendances_with_username.attendances.filter((a) => a.action === "leave");
 
         // action == "attend" である中で最も早い acted_at を attended_at とする
         const attended_at =
@@ -141,8 +141,8 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
         if (attended_at) {
           setCurrentAttendances([
             {
-              id: "current",
-              userName: "Current User",
+              id: "",
+              userName: response.attendances_with_username.username,
               userAttendances: [
                 {
                   userId: 0,
