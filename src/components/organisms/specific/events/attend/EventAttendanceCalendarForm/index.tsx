@@ -18,6 +18,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
   const [events, setEvents] = React.useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = React.useState<EventClickArg | null>(null);
   const [currentAttendances, setCurrentAttendances] = React.useState<Attendance[]>([]);
+  const [isForecast, setIsForecast] = React.useState(false);
   const [attendanceTimeForecastsWithUsername, setAttendanceTimeForecastsWithUsername] = React.useState<{
     [event_id: string]: {
       [user_id: number]: AttendanceTimeForecastsWithUsername;
@@ -98,6 +99,8 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
 
       if (eventStart <= now) {
         // イベント開始時刻が現在時刻以前の場合、履歴から取得
+        setIsForecast(false);
+
         const history = await getAttendanceHistory(eventId, applyTimezone(eventStart, tz, "UTC").toISOString());
         const attendLogs = history.attendances.filter((a) => a.action === "attend");
         const leaveLogs = history.attendances.filter((a) => a.action === "leave");
@@ -154,6 +157,8 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
         }
       } else {
         // イベント開始時刻が現在時刻より後の場合、予測から取得
+        setIsForecast(true);
+
         const eventAttendances = attendanceTimeForecastsWithUsername[eventId];
         if (!eventAttendances) {
           setCurrentAttendances([]);
@@ -210,6 +215,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
               eventEnd={selectedEvent?.event.end}
               isEventAllDay={selectedEvent?.event.allDay}
               attendances={currentAttendances}
+              isForecast={isForecast}
             />
           )}
       </div>
