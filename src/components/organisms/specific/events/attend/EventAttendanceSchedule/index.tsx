@@ -10,6 +10,7 @@ interface EventAttendanceScheduleProps {
   eventEnd: Date;
   isEventAllDay: boolean;
   attendances: Attendance[];
+  isForecast: boolean;
 }
 
 export const EventAttendanceSchedule = ({
@@ -17,6 +18,7 @@ export const EventAttendanceSchedule = ({
   eventEnd,
   isEventAllDay,
   attendances,
+  isForecast,
 }: EventAttendanceScheduleProps): React.JSX.Element => {
   const eventDuration = isEventAllDay ? 24 : eventEnd.getHours() + 1 - eventStart.getHours();
   const hours = Array.from({ length: eventDuration }, (_, i) => eventStart.getHours() + i);
@@ -45,7 +47,7 @@ export const EventAttendanceSchedule = ({
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Attendance Forecasts</CardTitle>
+        <CardTitle>Attendance {isForecast ? "Forecasts" : "History"}</CardTitle>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[calc(100vh-200px)]">
