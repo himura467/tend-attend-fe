@@ -23,7 +23,7 @@ export const EventAttendanceSchedule = ({
   const eventDuration = isEventAllDay ? 24 : eventEnd.getHours() + 1 - eventStart.getHours();
   const hours = Array.from({ length: eventDuration }, (_, i) => eventStart.getHours() + i);
 
-  const getUserAttendanceStyle = (ua: UserAttendance) => {
+  const getUserAttendanceStyle = (ua: UserAttendance): { top: string; height: string } => {
     const attendHour = ua.attendedAt.getHours();
     const attendMinute = ua.attendedAt.getMinutes();
     const leaveHour = ua.leftAt.getHours();
@@ -38,7 +38,7 @@ export const EventAttendanceSchedule = ({
     };
   };
 
-  const getUserAttendanceClass = (ua: UserAttendance) => {
+  const getUserAttendanceClass = (ua: UserAttendance): string => {
     // TODO: 色を動的に決める
     console.log(ua);
     return "bg-accent";
