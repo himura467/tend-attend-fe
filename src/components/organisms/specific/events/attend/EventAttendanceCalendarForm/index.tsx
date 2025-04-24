@@ -93,7 +93,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
   }, [fetchEvents, fetchAttendanceTimeForecasts]);
 
   const fetchAttendances = React.useCallback(
-    async (eventId: string, eventStart: Date, eventEnd: Date) => {
+    async (eventId: string, eventStart: Date, eventEnd: Date): Promise<void> => {
       const now = new Date();
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

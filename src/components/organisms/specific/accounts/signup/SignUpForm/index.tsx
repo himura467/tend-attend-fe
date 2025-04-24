@@ -80,14 +80,14 @@ export const SignUpForm = (): React.JSX.Element => {
     }
   };
 
-  const handleAddFollowee = () => {
+  const handleAddFollowee = (): void => {
     if (followeeInput.trim() && !followeeUsernames.includes(followeeInput.trim())) {
       setFolloweeUsernames([...followeeUsernames, followeeInput.trim()]);
       setFolloweeInput("");
     }
   };
 
-  const handleRemoveFollowee = (username: string) => {
+  const handleRemoveFollowee = (username: string): void => {
     setFolloweeUsernames(followeeUsernames.filter((name) => name !== username));
   };
 

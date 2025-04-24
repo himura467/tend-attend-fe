@@ -9,6 +9,7 @@ import {
 import { applyTimezone } from "@/lib/utils/timezone";
 import { endOfDay } from "date-fns";
 import { parseRecurrence } from "@/lib/utils/rfc5545";
+import { Options as RRuleOptions } from "rrule";
 
 export interface Event {
   id: string;
@@ -21,7 +22,28 @@ export interface Event {
   timezone: string;
 }
 
-export const mapEventsToFullCalendar = (events: Event[]) => {
+interface BaseFullCalendarEvent {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  allDay: boolean;
+}
+
+interface RecurringFullCalendarEvent {
+  id: string;
+  title: string;
+  allDay: boolean;
+  rrule: Partial<RRuleOptions> & {
+    dtstart: Date;
+  };
+  duration: {
+    days?: number;
+    minutes?: number;
+  };
+}
+
+export const mapEventsToFullCalendar = (events: Event[]): (BaseFullCalendarEvent | RecurringFullCalendarEvent)[] => {
   return events.map((event) => {
     const baseEvent = {
       id: event.id,
