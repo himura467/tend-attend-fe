@@ -165,24 +165,26 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
           return;
         }
 
-        return Object.entries(eventAttendances).map(([userId, userForecast]) => ({
-          id: userId,
-          userName: userForecast.username,
-          userAttendances: userForecast.attendance_time_forecasts
-            .filter(
-              (forecast) =>
-                applyTimezone(new Date(Date.parse(forecast.start)), "UTC", tz).getTime() === eventStart.getTime(),
-            )
-            .map((forecast) => ({
-              userId: parseInt(userId),
-              attendedAt: applyTimezone(new Date(Date.parse(forecast.attended_at)), "UTC", tz),
-              leftAt: applyTimezone(
-                new Date(new Date(Date.parse(forecast.attended_at)).getTime() + forecast.duration * 1000),
-                "UTC",
-                tz,
-              ),
-            })),
-        }));
+        setCurrentAttendances(
+          Object.entries(eventAttendances).map(([userId, userForecast]) => ({
+            id: userId,
+            userName: userForecast.username,
+            userAttendances: userForecast.attendance_time_forecasts
+              .filter(
+                (forecast) =>
+                  applyTimezone(new Date(Date.parse(forecast.start)), "UTC", tz).getTime() === eventStart.getTime(),
+              )
+              .map((forecast) => ({
+                userId: parseInt(userId),
+                attendedAt: applyTimezone(new Date(Date.parse(forecast.attended_at)), "UTC", tz),
+                leftAt: applyTimezone(
+                  new Date(new Date(Date.parse(forecast.attended_at)).getTime() + forecast.duration * 1000),
+                  "UTC",
+                  tz,
+                ),
+              })),
+          })),
+        );
       }
     },
     [attendanceTimeForecastsWithUsername],
