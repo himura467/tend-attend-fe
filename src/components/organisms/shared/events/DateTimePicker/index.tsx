@@ -1,15 +1,15 @@
-import { addDays, format } from "date-fns";
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { CalendarIcon, Clock, Repeat } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getCurrentYmdDate } from "@/lib/utils/date";
 import { areEqualByRegExps } from "@/lib/utils/array";
+import { getCurrentYmdDate } from "@/lib/utils/date";
 import { applyTimezone } from "@/lib/utils/timezone";
+import { addDays, format } from "date-fns";
+import { CalendarIcon, Clock, Repeat } from "lucide-react";
+import React from "react";
 
 type RecurrencesOption = {
   label: string;
@@ -131,7 +131,7 @@ export const DateTimePicker = ({
     <div className="flex flex-col space-y-4 rounded-lg border p-4">
       {!isAllDay && (
         <div className="flex items-center space-x-2">
-          <Clock className="h-5 w-5 text-muted-foreground" />
+          <Clock className="text-muted-foreground h-5 w-5" />
           <div className="flex items-center space-x-1">
             <Popover>
               <PopoverTrigger asChild>
@@ -197,7 +197,7 @@ export const DateTimePicker = ({
         </div>
       )}
       <div className="flex items-center space-x-2">
-        <CalendarIcon className="h-5 w-5 text-muted-foreground" />
+        <CalendarIcon className="text-muted-foreground h-5 w-5" />
         <div className="flex items-center space-x-1">
           <Popover>
             <PopoverTrigger asChild>
@@ -241,7 +241,7 @@ export const DateTimePicker = ({
       <div className="flex items-center space-x-4 pt-4">
         <div className="flex items-center space-x-2">
           <Switch id="all-day" checked={isAllDay} onCheckedChange={onIsAllDayChange} />
-          <label htmlFor="all-day" className="text-sm text-muted-foreground">
+          <label htmlFor="all-day" className="text-muted-foreground text-sm">
             {isAllDay ? "All day" : "Timed"}
           </label>
         </div>
@@ -261,7 +261,7 @@ export const DateTimePicker = ({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[240px] p-0" align="start">
-            <div className="rounded-md bg-popover p-1">
+            <div className="bg-popover rounded-md p-1">
               {recurrencesOptions.map((r) => (
                 <Button
                   key={r.label}

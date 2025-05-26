@@ -1,14 +1,14 @@
 import axiosInstance from "@/lib/api/axios-instance";
 import {
-  CreateEventRequest,
-  CreateEventResponse,
   AttendEventRequest,
   AttendEventResponse,
-  GetMyEventsResponse,
+  CreateEventRequest,
+  CreateEventResponse,
+  GetAttendanceHistoryResponse,
+  GetAttendanceTimeForecastsResponse,
   GetFollowingEventsResponse,
   GetGuestAttendanceStatusResponse,
-  GetAttendanceTimeForecastsResponse,
-  GetAttendanceHistoryResponse,
+  GetMyEventsResponse,
 } from "@/lib/api/dtos/event";
 
 export const createEvent = async (data: CreateEventRequest): Promise<CreateEventResponse> => {

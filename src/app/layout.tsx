@@ -1,9 +1,9 @@
-import { Inter } from "next/font/google";
-import { cn } from "@/lib/utils";
 import "@/app/globals.css";
-import React from "react";
-import { NextPage } from "next";
 import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
+import { NextPage } from "next";
+import { Inter } from "next/font/google";
+import React from "react";
 
 const fontHeading = Inter({
   subsets: ["latin"],

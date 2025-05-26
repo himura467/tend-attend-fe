@@ -1,9 +1,9 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getGuestAttendanceStatus, attendEvent } from "@/lib/api/events";
-import { AttendanceActionType, AttendanceAction } from "@/lib/types/event/attendance";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { attendEvent, getGuestAttendanceStatus } from "@/lib/api/events";
+import { AttendanceAction, AttendanceActionType } from "@/lib/types/event/attendance";
 import { applyTimezone } from "@/lib/utils/timezone";
+import React from "react";
 import { toast } from "sonner";
 
 interface EventAttendanceFormProps {
