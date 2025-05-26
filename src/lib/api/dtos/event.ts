@@ -14,6 +14,16 @@ interface EventWithId extends Event {
   id: string;
 }
 
+interface Attendance {
+  action: AttendanceActionType;
+  acted_at: string;
+}
+
+interface AttendancesWithUsername {
+  username: string;
+  attendances: Attendance[];
+}
+
 interface AttendanceTimeForecast {
   start: string;
   attended_at: string;
@@ -41,6 +51,11 @@ export interface AttendEventResponse {
   error_codes: number[];
 }
 
+export interface GetAttendanceHistoryResponse {
+  attendances_with_username: AttendancesWithUsername;
+  error_codes: number[];
+}
+
 export interface GetMyEventsResponse {
   events: EventWithId[];
   error_codes: number[];
@@ -51,7 +66,7 @@ export interface GetFollowingEventsResponse {
   error_codes: number[];
 }
 
-export interface GetGuestCurrentAttendanceStatusResponse {
+export interface GetGuestAttendanceStatusResponse {
   attend: boolean;
   error_codes: number[];
 }

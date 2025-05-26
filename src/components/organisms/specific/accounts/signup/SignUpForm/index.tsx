@@ -1,24 +1,24 @@
 "use client";
 
-import React from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createUserAccount } from "@/lib/api/accounts";
+import { Gender, GenderRecord, GenderType } from "@/lib/types/account/gender";
+import { cn } from "@/lib/utils";
+import { getCurrentYmdDate } from "@/lib/utils/date";
 import { rr } from "@/lib/utils/reverse-router";
 import { routerPush } from "@/lib/utils/router";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { Gender, GenderType, GenderRecord } from "@/lib/types/account/gender";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { getCurrentYmdDate } from "@/lib/utils/date";
 import { applyTimezone } from "@/lib/utils/timezone";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { X } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { toast } from "sonner";
 
 const years = Array.from({ length: 100 }, (_, i) => getCurrentYmdDate(new Date()).getFullYear() - i);
 const months = [
@@ -38,7 +38,6 @@ const months = [
 
 export const SignUpForm = (): React.JSX.Element => {
   const router = useRouter();
-  const { toast } = useToast();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [nickname, setNickname] = React.useState("");
@@ -63,31 +62,23 @@ export const SignUpForm = (): React.JSX.Element => {
       });
 
       if (response.error_codes.length > 0) {
-        toast({
-          title: "An error occurred",
-          description: "Failed to create an account",
-          variant: "destructive",
-        });
+        toast.error("Failed to create an account");
       } else {
         routerPush(rr.signin.index(), router);
       }
     } catch {
-      toast({
-        title: "An error occurred",
-        description: "Failed to create an account",
-        variant: "destructive",
-      });
+      toast.error("Failed to create an account");
     }
   };
 
-  const handleAddFollowee = () => {
+  const handleAddFollowee = (): void => {
     if (followeeInput.trim() && !followeeUsernames.includes(followeeInput.trim())) {
       setFolloweeUsernames([...followeeUsernames, followeeInput.trim()]);
       setFolloweeInput("");
     }
   };
 
-  const handleRemoveFollowee = (username: string) => {
+  const handleRemoveFollowee = (username: string): void => {
     setFolloweeUsernames(followeeUsernames.filter((name) => name !== username));
   };
 

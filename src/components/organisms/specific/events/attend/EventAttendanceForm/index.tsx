@@ -1,10 +1,10 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getGuestCurrentAttendanceStatus, attendEvent } from "@/lib/api/events";
-import { useToast } from "@/hooks/use-toast";
-import { AttendanceActionType, AttendanceAction } from "@/lib/types/event/attendance";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { attendEvent, getGuestAttendanceStatus } from "@/lib/api/events";
+import { AttendanceAction, AttendanceActionType } from "@/lib/types/event/attendance";
 import { applyTimezone } from "@/lib/utils/timezone";
+import React from "react";
+import { toast } from "sonner";
 
 interface EventAttendanceFormProps {
   eventId: string | null;
@@ -17,7 +17,6 @@ export const EventAttendanceForm = ({
   eventSummary,
   eventStart,
 }: EventAttendanceFormProps): React.JSX.Element => {
-  const { toast } = useToast();
   const [attend, setAttend] = React.useState<boolean | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -28,25 +27,17 @@ export const EventAttendanceForm = ({
   const fetchAttendanceStatus = React.useCallback(async (): Promise<void> => {
     if (eventId && eventStartUTC) {
       try {
-        const response = await getGuestCurrentAttendanceStatus(eventId, eventStartUTC.toISOString());
+        const response = await getGuestAttendanceStatus(eventId, eventStartUTC.toISOString());
         if (response.error_codes.length === 0) {
           setAttend(response.attend);
         } else {
-          toast({
-            title: "An error occurred",
-            description: "Failed to fetch attendance status",
-            variant: "destructive",
-          });
+          toast.error("Failed to fetch attendance status");
         }
       } catch {
-        toast({
-          title: "An error occurred",
-          description: "Failed to fetch attendance status",
-          variant: "destructive",
-        });
+        toast.error("Failed to fetch attendance status");
       }
     }
-  }, [eventId, eventStartUTC, toast]);
+  }, [eventId, eventStartUTC]);
 
   React.useEffect(() => {
     if (eventId && eventStart) {
@@ -64,18 +55,11 @@ export const EventAttendanceForm = ({
         if (response.error_codes.length === 0) {
           await fetchAttendanceStatus();
         } else {
-          toast({
-            title: "An error occurred",
-            description: "Request outside of available time", // TODO: 本来はエラーコードからエラーメッセージを取得するべき
-            variant: "destructive",
-          });
+          // TODO: 本来はエラーコードからエラーメッセージを取得するべき
+          toast.error("Request outside of available time");
         }
       } catch {
-        toast({
-          title: "An error occurred",
-          description: "Failed to update attendance status",
-          variant: "destructive",
-        });
+        toast.error("Failed to update attendance status");
       } finally {
         setIsLoading(false);
       }

@@ -1,6 +1,6 @@
-import { LinkProps } from "next/link";
-import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { formatUrl } from "@/lib/utils/url";
+import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { LinkProps } from "next/link";
 
 type Destination = Pick<LinkProps, "href">;
 
