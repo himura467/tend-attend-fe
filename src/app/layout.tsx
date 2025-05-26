@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import "@/app/globals.css";
 import React from "react";
 import { NextPage } from "next";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 
 const fontHeading = Inter({
   subsets: ["latin"],

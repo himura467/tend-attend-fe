@@ -8,7 +8,7 @@ import { createUserAccount } from "@/lib/api/accounts";
 import { rr } from "@/lib/utils/reverse-router";
 import { routerPush } from "@/lib/utils/router";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Gender, GenderType, GenderRecord } from "@/lib/types/account/gender";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -38,7 +38,6 @@ const months = [
 
 export const SignUpForm = (): React.JSX.Element => {
   const router = useRouter();
-  const { toast } = useToast();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [nickname, setNickname] = React.useState("");
@@ -63,20 +62,12 @@ export const SignUpForm = (): React.JSX.Element => {
       });
 
       if (response.error_codes.length > 0) {
-        toast({
-          title: "An error occurred",
-          description: "Failed to create an account",
-          variant: "destructive",
-        });
+        toast.error("Failed to create an account");
       } else {
         routerPush(rr.signin.index(), router);
       }
     } catch {
-      toast({
-        title: "An error occurred",
-        description: "Failed to create an account",
-        variant: "destructive",
-      });
+      toast.error("Failed to create an account");
     }
   };
 
