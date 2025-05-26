@@ -1,9 +1,9 @@
-import React from "react";
-import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Attendance, UserAttendance } from "@/lib/types/event/attendance";
+import { cn } from "@/lib/utils";
+import React from "react";
 
 interface EventAttendanceScheduleProps {
   eventStart: Date;
@@ -54,7 +54,7 @@ export const EventAttendanceSchedule = ({
           <div className="flex">
             <div className="relative w-16 flex-none border-r">
               {hours.map((hour) => (
-                <div key={hour} className="h-[60px] border-b px-2 py-1 text-sm text-muted-foreground">
+                <div key={hour} className="text-muted-foreground h-[60px] border-b px-2 py-1 text-sm">
                   {hour}:00
                 </div>
               ))}
@@ -66,7 +66,7 @@ export const EventAttendanceSchedule = ({
                   className={cn("relative min-h-[60px] flex-1", index !== attendances.length - 1 && "border-r")}
                   style={{ height: `${eventDuration * 60}px` }}
                 >
-                  <div className="absolute left-0 right-0 top-0 flex h-8 items-center justify-center border-b bg-muted text-sm font-medium">
+                  <div className="bg-muted absolute top-0 right-0 left-0 flex h-8 items-center justify-center border-b text-sm font-medium">
                     {attendance.userName}
                   </div>
                   <div className="pt-8">
@@ -77,7 +77,7 @@ export const EventAttendanceSchedule = ({
                             <div
                               style={getUserAttendanceStyle(ua)}
                               className={cn(
-                                "absolute left-1 right-1 cursor-pointer rounded-md p-2",
+                                "absolute right-1 left-1 cursor-pointer rounded-md p-2",
                                 getUserAttendanceClass(ua),
                               )}
                             >

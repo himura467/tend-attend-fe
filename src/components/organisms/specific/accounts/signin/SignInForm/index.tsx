@@ -1,14 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import React from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { createAuthToken } from "@/lib/api/auth";
 import { routerPush } from "@/lib/utils/router";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
+import React from "react";
+import { toast } from "sonner";
 
 interface SignInFormProps {
   location: string;
@@ -16,7 +16,6 @@ interface SignInFormProps {
 
 export const SignInForm = ({ location }: SignInFormProps): React.JSX.Element => {
   const router = useRouter();
-  const { toast } = useToast();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -31,11 +30,7 @@ export const SignInForm = ({ location }: SignInFormProps): React.JSX.Element => 
 
       routerPush({ href: location }, router);
     } catch {
-      toast({
-        title: "An error occurred",
-        description: "Failed to sign in",
-        variant: "destructive",
-      });
+      toast.error("Failed to sign in");
     }
   };
 

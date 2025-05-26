@@ -1,20 +1,19 @@
 "use client";
 
-import React from "react";
-import { useToast } from "@/hooks/use-toast";
-import { parseYmdDate, parseYmdHm15Date } from "@/lib/utils/date";
-import { getFollowingEvents, getAttendanceTimeForecasts, getAttendanceHistory } from "@/lib/api/events";
-import { AttendanceTimeForecastsWithUsername } from "@/lib/api/dtos/event";
-import { EventClickArg } from "@fullcalendar/core";
 import { Calendar } from "@/components/organisms/shared/events/Calendar";
 import { EventAttendanceForm } from "@/components/organisms/specific/events/attend/EventAttendanceForm";
-import { Event, mapEventsToFullCalendar } from "@/lib/utils/fullcalendar";
 import { EventAttendanceSchedule } from "@/components/organisms/specific/events/attend/EventAttendanceSchedule";
+import { AttendanceTimeForecastsWithUsername } from "@/lib/api/dtos/event";
+import { getAttendanceHistory, getAttendanceTimeForecasts, getFollowingEvents } from "@/lib/api/events";
 import { Attendance } from "@/lib/types/event/attendance";
+import { parseYmdDate, parseYmdHm15Date } from "@/lib/utils/date";
+import { Event, mapEventsToFullCalendar } from "@/lib/utils/fullcalendar";
 import { applyTimezone } from "@/lib/utils/timezone";
+import { EventClickArg } from "@fullcalendar/core";
+import React from "react";
+import { toast } from "sonner";
 
 export const EventAttendanceCalendarForm = (): React.JSX.Element => {
-  const { toast } = useToast();
   const [events, setEvents] = React.useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = React.useState<EventClickArg | null>(null);
   const [currentAttendances, setCurrentAttendances] = React.useState<Attendance[]>([]);
@@ -51,20 +50,12 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
           }),
         );
       } else {
-        toast({
-          title: "An error occurred",
-          description: "Failed to fetch events",
-          variant: "destructive",
-        });
+        toast.error("Failed to fetch events");
       }
     } catch {
-      toast({
-        title: "An error occurred",
-        description: "Failed to fetch events",
-        variant: "destructive",
-      });
+      toast.error("Failed to fetch events");
     }
-  }, [toast]);
+  }, []);
 
   const fetchAttendanceTimeForecasts = React.useCallback(async () => {
     try {
@@ -72,20 +63,12 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
       if (response.error_codes.length === 0) {
         setAttendanceTimeForecastsWithUsername(response.attendance_time_forecasts_with_username);
       } else {
-        toast({
-          title: "An error occurred",
-          description: "Failed to fetch attendance time forecasts",
-          variant: "destructive",
-        });
+        toast.error("Failed to fetch attendance time forecasts");
       }
     } catch {
-      toast({
-        title: "An error occurred",
-        description: "Failed to fetch attendance time forecasts",
-        variant: "destructive",
-      });
+      toast.error("Failed to fetch attendance time forecasts");
     }
-  }, [toast]);
+  }, []);
 
   React.useEffect(() => {
     void fetchEvents();

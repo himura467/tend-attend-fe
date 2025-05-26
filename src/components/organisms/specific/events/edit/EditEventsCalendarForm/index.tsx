@@ -1,19 +1,17 @@
 "use client";
 
-import React from "react";
-import { z } from "zod";
-import { useToast } from "@/hooks/use-toast";
-import { parseYmdDate, parseYmdHm15Date, getCurrentYmdDate } from "@/lib/utils/date";
-import { applyTimezone } from "@/lib/utils/timezone";
 import { Calendar } from "@/components/organisms/shared/events/Calendar";
-import { CreateEventForm } from "@/components/organisms/specific/events/edit/CreateEventForm";
-import { startOfDay, addDays } from "date-fns";
+import { CreateEventForm, formSchema } from "@/components/organisms/specific/events/edit/CreateEventForm";
 import { createEvent, getMyEvents } from "@/lib/api/events";
-import { formSchema } from "@/components/organisms/specific/events/edit/CreateEventForm";
+import { getCurrentYmdDate, parseYmdDate, parseYmdHm15Date } from "@/lib/utils/date";
 import { Event, mapEventsToFullCalendar } from "@/lib/utils/fullcalendar";
+import { applyTimezone } from "@/lib/utils/timezone";
+import { addDays, startOfDay } from "date-fns";
+import React from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export const EditEventsCalendarForm = (): React.JSX.Element => {
-  const { toast } = useToast();
   const [events, setEvents] = React.useState<Event[]>([]);
   const [startDate, setStartDate] = React.useState<Date>(getCurrentYmdDate(new Date()));
   const [endDate, setEndDate] = React.useState<Date>(addDays(getCurrentYmdDate(new Date()), 1));
@@ -47,20 +45,12 @@ export const EditEventsCalendarForm = (): React.JSX.Element => {
           }),
         );
       } else {
-        toast({
-          title: "An error occurred",
-          description: "Failed to fetch events",
-          variant: "destructive",
-        });
+        toast.error("Failed to fetch events");
       }
     } catch {
-      toast({
-        title: "An error occurred",
-        description: "Failed to fetch events",
-        variant: "destructive",
-      });
+      toast.error("Failed to fetch events");
     }
-  }, [toast]);
+  }, []);
 
   React.useEffect(() => {
     void fetchEvents();
@@ -81,23 +71,14 @@ export const EditEventsCalendarForm = (): React.JSX.Element => {
       });
 
       if (response.error_codes.length > 0) {
-        toast({
-          title: "An error occurred",
-          description: "Failed to create event",
-          variant: "destructive",
-        });
+        toast.error("Failed to create event");
       } else {
-        toast({
-          title: "Event registered",
+        toast.message("Event registered", {
           description: `You have registered for ${values.summary}`,
         });
       }
     } catch {
-      toast({
-        title: "An error occurred",
-        description: "Failed to create event",
-        variant: "destructive",
-      });
+      toast.error("Failed to create event");
     }
 
     setStartDate(getCurrentYmdDate(new Date()));
