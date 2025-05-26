@@ -1,11 +1,11 @@
-import React from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import rrulePlugin from "@fullcalendar/rrule";
-import interactionPlugin from "@fullcalendar/interaction";
-import { EventClickArg } from "@fullcalendar/core";
 import { Card, CardContent } from "@/components/ui/card";
+import { EventClickArg } from "@fullcalendar/core";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import FullCalendar from "@fullcalendar/react";
+import rrulePlugin from "@fullcalendar/rrule";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import React from "react";
 
 interface CalendarProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
