@@ -9,12 +9,17 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
+const ignoreFiles = ["src/components/ui/*.tsx"];
+
+const eslintRules = {
+  "@typescript-eslint/explicit-function-return-type": "error",
+};
+
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    rules: {
-      "@typescript-eslint/explicit-function-return-type": "error",
-    },
+    ignores: ignoreFiles,
+    rules: eslintRules,
   },
 ];
 
