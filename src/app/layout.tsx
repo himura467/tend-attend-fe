@@ -1,6 +1,6 @@
-import "@/app/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
+import "@/styles/globals.css";
 import { NextPage } from "next";
 import { Inter } from "next/font/google";
 import React from "react";
