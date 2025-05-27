@@ -51,6 +51,14 @@ export interface AttendEventResponse {
   error_codes: number[];
 }
 
+export interface UpdateAttendancesRequest {
+  attendances: Attendance[];
+}
+
+export interface UpdateAttendancesResponse {
+  error_codes: number[];
+}
+
 export interface GetAttendanceHistoryResponse {
   attendances_with_username: AttendancesWithUsername;
   error_codes: number[];
