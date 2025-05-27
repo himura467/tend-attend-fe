@@ -204,12 +204,10 @@ export const EventAttendanceForm = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          {eventSummary ? `Attendance for ${eventSummary} at ${eventStart?.toLocaleString()}` : "Select an event"}
-        </CardTitle>
+        <CardTitle>{eventSummary ? `${eventSummary} at ${eventStart?.toLocaleString()}` : "Select an event"}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {attend !== null && <p>{attend ? "You are attending this event" : "You are not attending this event"}</p>}
+        {attend !== null && <p>{attend ? "Attending" : "Not attending"}</p>}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <h3 className="font-medium">Attendance Record</h3>
