@@ -205,9 +205,7 @@ export const EventAttendanceForm = ({
     <Card>
       <CardHeader>
         <CardTitle>
-          {eventSummary
-            ? `Attendance for ${eventSummary} at ${eventStart?.toLocaleString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false })}`
-            : "Select an event"}
+          {eventSummary ? `Attendance for ${eventSummary} at ${eventStart?.toLocaleString()}` : "Select an event"}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
