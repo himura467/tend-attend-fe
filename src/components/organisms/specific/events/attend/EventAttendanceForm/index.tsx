@@ -16,6 +16,13 @@ interface EventAttendanceFormProps {
   onAttendanceUpdate: (eventId: string, eventStart: Date, eventEnd: Date) => Promise<void>;
 }
 
+interface EditableAttendance {
+  action: AttendanceActionType;
+  acted_at: string;
+  isEditing: boolean;
+  isNew: boolean;
+}
+
 export const EventAttendanceForm = ({
   eventId,
   eventSummary,
