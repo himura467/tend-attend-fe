@@ -43,15 +43,17 @@ export const EventAttendanceForm = ({
     ? applyTimezone(eventStart, Intl.DateTimeFormat().resolvedOptions().timeZone, "UTC")
     : null;
 
+  const mapAttendancesToEditable = (attendances: { action: string; acted_at: string }[]): EditableAttendance[] => {
+    return attendances.map((attendance) => ({
+      action: attendance.action as AttendanceActionType,
+      acted_at: attendance.acted_at,
+      isEditing: false,
+      isNew: false,
+    }));
+  };
+
   React.useEffect(() => {
-    setEditableAttendances(
-      attendances.map((attendance) => ({
-        action: attendance.action as AttendanceActionType,
-        acted_at: attendance.acted_at,
-        isEditing: false,
-        isNew: false,
-      })),
-    );
+    setEditableAttendances(mapAttendancesToEditable(attendances));
   }, [attendances]);
 
   const fetchAttendanceStatus = React.useCallback(async (): Promise<void> => {
@@ -237,14 +239,7 @@ export const EventAttendanceForm = ({
                     variant="outline"
                     onClick={() => {
                       setIsEditMode(false);
-                      setEditableAttendances(
-                        attendances.map((attendance) => ({
-                          action: attendance.action as AttendanceActionType,
-                          acted_at: attendance.acted_at,
-                          isEditing: false,
-                          isNew: false,
-                        })),
-                      );
+                      setEditableAttendances(mapAttendancesToEditable(attendances));
                     }}
                     disabled={isLoading}
                   >
