@@ -33,10 +33,23 @@ export const EventAttendanceForm = ({
 }: EventAttendanceFormProps): React.JSX.Element => {
   const [attend, setAttend] = React.useState<boolean | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [editableAttendances, setEditableAttendances] = React.useState<EditableAttendance[]>([]);
+  const [isEditMode, setIsEditMode] = React.useState(false);
 
   const eventStartUTC = eventStart
     ? applyTimezone(eventStart, Intl.DateTimeFormat().resolvedOptions().timeZone, "UTC")
     : null;
+
+  React.useEffect(() => {
+    setEditableAttendances(
+      attendances.map((attendance) => ({
+        action: attendance.action as AttendanceActionType,
+        acted_at: attendance.acted_at,
+        isEditing: false,
+        isNew: false,
+      })),
+    );
+  }, [attendances]);
 
   const fetchAttendanceStatus = React.useCallback(async (): Promise<void> => {
     if (eventId && eventStartUTC) {
