@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { attendEvent, getGuestAttendanceStatus, updateAttendances } from "@/lib/api/events";
 import { AttendanceAction, AttendanceActionType } from "@/lib/types/event/attendance";
+import { formatToLocaleYmdHm } from "@/lib/utils/date";
 import { applyTimezone } from "@/lib/utils/timezone";
 import { Edit, Plus, Save, Trash2, X } from "lucide-react";
 import React from "react";
@@ -204,7 +205,9 @@ export const EventAttendanceForm = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{eventSummary ? `${eventSummary} at ${eventStart?.toLocaleString()}` : "Select an event"}</CardTitle>
+        <CardTitle>
+          {eventSummary && eventStart ? `${eventSummary} at ${formatToLocaleYmdHm(eventStart)}` : "Select an event"}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {attend !== null && <p>{attend ? "Attending" : "Not attending"}</p>}
@@ -296,11 +299,11 @@ export const EventAttendanceForm = ({
                     ) : (
                       <div className="flex items-center justify-between text-sm">
                         <span>
-                          {applyTimezone(
+                          {formatToLocaleYmdHm(
                             new Date(attendance.acted_at),
                             "UTC",
                             Intl.DateTimeFormat().resolvedOptions().timeZone,
-                          ).toLocaleString()}
+                          )}
                         </span>
                         <div className="flex items-center gap-2">
                           <span className={attendance.action === "attend" ? "text-green-600" : "text-red-600"}>
