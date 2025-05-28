@@ -256,7 +256,7 @@ export const EventAttendanceForm = ({
                   <div key={index} className="mb-2 space-y-2">
                     {attendance.isEditing ? (
                       <div className="space-y-2 p-2 border rounded">
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-[1fr_2fr] gap-2">
                           <div>
                             <label className="text-xs font-medium">Action</label>
                             <Select
