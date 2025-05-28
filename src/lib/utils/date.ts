@@ -63,7 +63,7 @@ export const getYmdHm15DeltaMinutes = (before: YmdHm15Date, after: YmdHm15Date):
 };
 
 export const formatToLocaleYmdHm = (date: Date, srcTz?: string, dstTz?: string): string => {
-  let zonedDate = srcTz && dstTz ? applyTimezone(date, srcTz, dstTz) : date;
+  const zonedDate = srcTz && dstTz ? applyTimezone(date, srcTz, dstTz) : date;
   return zonedDate.toLocaleString([], {
     year: "numeric",
     month: "2-digit",
