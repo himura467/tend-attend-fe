@@ -50,7 +50,23 @@ export const EventAttendanceSchedule = ({
         <CardTitle>Attendance {isForecast ? "Forecasts" : "History"}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[calc(100vh-200px)]">
+        <div className="flex border-b">
+          <div className="w-16 flex-none border-r" />
+          <div className="flex flex-1">
+            {attendances.map((attendance, index) => (
+              <div
+                key={`header-${attendance.id}`}
+                className={cn(
+                  "flex h-8 flex-1 items-center justify-center bg-muted text-sm font-medium",
+                  index !== attendances.length - 1 && "border-r",
+                )}
+              >
+                {attendance.userName}
+              </div>
+            ))}
+          </div>
+        </div>
+        <ScrollArea className="h-[calc(100vh-200px-2rem)]">
           <div className="flex">
             <div className="relative w-16 flex-none border-r">
               {hours.map((hour) => (
@@ -66,41 +82,36 @@ export const EventAttendanceSchedule = ({
                   className={cn("relative min-h-[60px] flex-1", index !== attendances.length - 1 && "border-r")}
                   style={{ height: `${eventDuration * 60}px` }}
                 >
-                  <div className="bg-muted absolute top-0 right-0 left-0 flex h-8 items-center justify-center border-b text-sm font-medium">
-                    {attendance.userName}
-                  </div>
-                  <div className="pt-8">
-                    <TooltipProvider>
-                      {attendance.userAttendances.map((ua) => (
-                        <Tooltip key={ua.userId}>
-                          <TooltipTrigger asChild>
-                            <div
-                              style={getUserAttendanceStyle(ua)}
-                              className={cn(
-                                "absolute right-1 left-1 cursor-pointer rounded-md p-2",
-                                getUserAttendanceClass(ua),
-                              )}
-                            >
-                              <div className="truncate text-sm font-medium">{attendance.userName}</div>
-                              <div className="text-xs opacity-90">
-                                {ua.attendedAt.getHours()}:{ua.attendedAt.getMinutes().toString().padStart(2, "0")}
-                                {" - "}
-                                {ua.leftAt.getHours()}:{ua.leftAt.getMinutes().toString().padStart(2, "0")}
-                              </div>
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{attendance.userName}</p>
-                            <p>
+                  <TooltipProvider>
+                    {attendance.userAttendances.map((ua) => (
+                      <Tooltip key={ua.userId}>
+                        <TooltipTrigger asChild>
+                          <div
+                            style={getUserAttendanceStyle(ua)}
+                            className={cn(
+                              "absolute right-1 left-1 cursor-pointer rounded-md p-2",
+                              getUserAttendanceClass(ua),
+                            )}
+                          >
+                            <div className="truncate text-sm font-medium">{attendance.userName}</div>
+                            <div className="text-xs opacity-90">
                               {ua.attendedAt.getHours()}:{ua.attendedAt.getMinutes().toString().padStart(2, "0")}
                               {" - "}
                               {ua.leftAt.getHours()}:{ua.leftAt.getMinutes().toString().padStart(2, "0")}
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      ))}
-                    </TooltipProvider>
-                  </div>
+                            </div>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{attendance.userName}</p>
+                          <p>
+                            {ua.attendedAt.getHours()}:{ua.attendedAt.getMinutes().toString().padStart(2, "0")}
+                            {" - "}
+                            {ua.leftAt.getHours()}:{ua.leftAt.getMinutes().toString().padStart(2, "0")}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ))}
+                  </TooltipProvider>
                 </div>
               ))}
             </div>

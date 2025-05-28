@@ -17,6 +17,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
   const [events, setEvents] = React.useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = React.useState<EventClickArg | null>(null);
   const [currentAttendances, setCurrentAttendances] = React.useState<Attendance[]>([]);
+  const [attendanceHistory, setAttendanceHistory] = React.useState<{ action: string; acted_at: string }[]>([]);
   const [isForecast, setIsForecast] = React.useState(false);
   const [attendanceTimeForecastsWithUsername, setAttendanceTimeForecastsWithUsername] = React.useState<{
     [event_id: string]: {
@@ -85,6 +86,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
         setIsForecast(false);
 
         const response = await getAttendanceHistory(eventId, applyTimezone(eventStart, tz, "UTC").toISOString());
+        setAttendanceHistory(response.attendances_with_username.attendances);
         const attendLogs = response.attendances_with_username.attendances.filter((a) => a.action === "attend");
         const leaveLogs = response.attendances_with_username.attendances.filter((a) => a.action === "leave");
 
@@ -141,6 +143,7 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
       } else {
         // イベント開始時刻が現在時刻より後の場合、予測から取得
         setIsForecast(true);
+        setAttendanceHistory([]);
 
         const eventAttendances = attendanceTimeForecastsWithUsername[eventId];
         if (!eventAttendances) {
@@ -190,6 +193,11 @@ export const EventAttendanceCalendarForm = (): React.JSX.Element => {
           eventId={selectedEvent?.event.id || null}
           eventSummary={selectedEvent?.event.title || null}
           eventStart={selectedEvent?.event.start || null}
+          eventEnd={selectedEvent?.event.end || null}
+          attendances={
+            selectedEvent?.event.id && selectedEvent?.event.start && selectedEvent?.event.end ? attendanceHistory : []
+          }
+          onAttendanceUpdate={fetchAttendances}
         />
         {selectedEvent?.event.id &&
           selectedEvent?.event.start &&
