@@ -61,3 +61,14 @@ export const getYmdDeltaDays = (before: YmdDate, after: YmdDate): number => {
 export const getYmdHm15DeltaMinutes = (before: YmdHm15Date, after: YmdHm15Date): number => {
   return (after.getTime() - before.getTime()) / (1000 * 60);
 };
+
+export const formatToLocaleYmdHm = (date: Date, srcTz?: string, dstTz?: string): string => {
+  let zonedDate = srcTz && dstTz ? applyTimezone(date, srcTz, dstTz) : date;
+  return zonedDate.toLocaleString([], {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
