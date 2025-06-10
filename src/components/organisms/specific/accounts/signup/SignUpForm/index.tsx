@@ -11,7 +11,7 @@ import { createUserAccount } from "@/lib/api/accounts";
 import { Gender, GenderRecord, GenderType } from "@/lib/types/account/gender";
 import { cn } from "@/lib/utils";
 import { getCurrentYmdDate } from "@/lib/utils/date";
-import { rr } from "@/lib/utils/reverse-router";
+import { rr } from "@/lib/utils/reverseRouter";
 import { routerPush } from "@/lib/utils/router";
 import { applyTimezone } from "@/lib/utils/timezone";
 import { format } from "date-fns";

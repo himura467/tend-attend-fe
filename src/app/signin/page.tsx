@@ -1,6 +1,6 @@
 import { SignInForm } from "@/components/organisms/specific/accounts/signin/SignInForm";
 import { DialogTemplate } from "@/components/templates/DialogTemplate";
-import { rr } from "@/lib/utils/reverse-router";
+import { rr } from "@/lib/utils/reverseRouter";
 import { formatUrl } from "@/lib/utils/url";
 import { NextPage } from "next";
 import Link from "next/link";

@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/api/axios-instance";
+import axiosInstance from "@/lib/api/axiosInstance";
 import {
   AttendEventRequest,
   AttendEventResponse,
