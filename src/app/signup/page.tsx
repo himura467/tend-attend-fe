@@ -1,6 +1,6 @@
 import { SignUpForm } from "@/components/organisms/specific/accounts/signup/SignUpForm";
 import { DialogTemplate } from "@/components/templates/DialogTemplate";
-import { rr } from "@/lib/utils/reverse-router";
+import { rr } from "@/lib/utils/reverseRouter";
 import { NextPage } from "next";
 import Link from "next/link";
 import React from "react";

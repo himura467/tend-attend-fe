@@ -1,4 +1,4 @@
-import { rr } from "@/lib/utils/reverse-router";
+import { rr } from "@/lib/utils/reverseRouter";
 import Link from "next/link";
 import React from "react";
 

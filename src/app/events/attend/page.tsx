@@ -1,7 +1,7 @@
 import { EventAttendanceCalendarForm } from "@/components/organisms/specific/events/attend/EventAttendanceCalendarForm";
 import { DialogTemplate } from "@/components/templates/DialogTemplate";
 import { Button } from "@/components/ui/button";
-import { rr } from "@/lib/utils/reverse-router";
+import { rr } from "@/lib/utils/reverseRouter";
 import { NextPage } from "next";
 import Link from "next/link";
 
