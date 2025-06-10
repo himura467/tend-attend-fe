@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/api/axios-instance";
+import axiosInstance from "@/lib/api/axiosInstance";
 import { AuthToken, OAuth2PasswordRequestForm } from "@/lib/api/dtos/auth";
 
 export const createAuthToken = async (data: OAuth2PasswordRequestForm): Promise<AuthToken> => {
