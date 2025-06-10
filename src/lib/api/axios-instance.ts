@@ -11,7 +11,8 @@ const axiosInstance = axios.create({
 // Request interceptor to add x-amz-content-sha256 header for POST and PUT requests
 axiosInstance.interceptors.request.use(async (config) => {
   if (["POST", "PUT"].includes(config.method?.toUpperCase() || "") && config.data !== undefined) {
-    config.headers[SHA256_HEADER] = await getPayloadHash(config.data);
+    const bodyString = typeof config.data === "string" ? config.data : JSON.stringify(config.data);
+    config.headers[SHA256_HEADER] = await getPayloadHash(bodyString);
   }
   return config;
 });
