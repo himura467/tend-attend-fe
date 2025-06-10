@@ -1,4 +1,4 @@
-import { SHA256_HEADER, getPayloadHash } from "@/lib/utils/aws-sig-v4";
+import { getPayloadHash, prepareBody, SHA256_HEADER } from "@/lib/utils/aws-sig-v4";
 import axios from "axios";
 
 const axiosInstance = axios.create({
@@ -11,8 +11,9 @@ const axiosInstance = axios.create({
 // Request interceptor to add x-amz-content-sha256 header for POST and PUT requests
 axiosInstance.interceptors.request.use(async (config) => {
   if (["POST", "PUT"].includes(config.method?.toUpperCase() || "") && config.data !== undefined) {
-    const bodyString = typeof config.data === "string" ? config.data : JSON.stringify(config.data);
-    config.headers[SHA256_HEADER] = await getPayloadHash(bodyString);
+    const contentType = config.headers["Content-Type"] || config.headers["content-type"] || "";
+    const bodyToHash = prepareBody(config.data, contentType);
+    config.headers[SHA256_HEADER] = await getPayloadHash(bodyToHash);
   }
   return config;
 });
