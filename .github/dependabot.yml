@@ -1,0 +1,19 @@
+version: 2
+updates:
+  # Node.js dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "12:00"
+      timezone: "Asia/Tokyo"
+    target-branch: "develop"
+
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "12:00"
+      timezone: "Asia/Tokyo"
+    target-branch: "develop"
