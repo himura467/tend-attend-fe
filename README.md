@@ -120,3 +120,18 @@ src/
 │   └── utils/      # Utility functions
 └── styles/         # Global CSS styles
 ```
+
+## 🤝 Contributing
+
+1. Follow the established code style (ESLint, Prettier)
+2. Run linting and tests before submitting PRs
+3. Update documentation for new features
+4. Use conventional commit messages
+
+## 📝 License
+
+This project is licensed under the terms specified in the LICENSE file.
+
+## 👨‍💻 Author
+
+**himura467** - mitarashidango0927@gmail.com
