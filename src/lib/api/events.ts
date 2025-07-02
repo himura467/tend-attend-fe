@@ -1,4 +1,3 @@
-import axiosInstance from "@/lib/api/axiosInstance";
 import {
   AttendEventRequest,
   AttendEventResponse,
@@ -12,12 +11,14 @@ import {
   UpdateAttendancesRequest,
   UpdateAttendancesResponse,
 } from "@/lib/api/dtos/event";
+import { fetchWithSHA256Header } from "@/lib/utils/fetch";
 
 export const createEvent = async (data: CreateEventRequest): Promise<CreateEventResponse> => {
-  const response = await axiosInstance.post<CreateEventResponse>("/events/create", data, {
-    withCredentials: true,
+  return fetchWithSHA256Header<CreateEventResponse>("/events/create", {
+    method: "POST",
+    body: JSON.stringify(data),
+    credentials: "include",
   });
-  return response.data;
 };
 
 export const attendEvent = async (
@@ -25,10 +26,11 @@ export const attendEvent = async (
   eventId: string,
   start: string,
 ): Promise<AttendEventResponse> => {
-  const response = await axiosInstance.post<AttendEventResponse>(`/events/attend/${eventId}/${start}`, data, {
-    withCredentials: true,
+  return fetchWithSHA256Header<AttendEventResponse>(`/events/attend/${eventId}/${start}`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    credentials: "include",
   });
-  return response.data;
 };
 
 export const updateAttendances = async (
@@ -36,49 +38,47 @@ export const updateAttendances = async (
   eventId: string,
   start: string,
 ): Promise<UpdateAttendancesResponse> => {
-  const response = await axiosInstance.put<UpdateAttendancesResponse>(`/events/attend/${eventId}/${start}`, data, {
-    withCredentials: true,
+  return fetchWithSHA256Header<UpdateAttendancesResponse>(`/events/attend/${eventId}/${start}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+    credentials: "include",
   });
-  return response.data;
 };
 
 export const getAttendanceHistory = async (eventId: string, start: string): Promise<GetAttendanceHistoryResponse> => {
-  const response = await axiosInstance.get<GetAttendanceHistoryResponse>(`/events/attend/${eventId}/${start}`, {
-    withCredentials: true,
+  return fetchWithSHA256Header<GetAttendanceHistoryResponse>(`/events/attend/${eventId}/${start}`, {
+    method: "GET",
+    credentials: "include",
   });
-  return response.data;
 };
 
 export const getMyEvents = async (): Promise<GetMyEventsResponse> => {
-  const response = await axiosInstance.get<GetMyEventsResponse>("/events/mine", {
-    withCredentials: true,
+  return fetchWithSHA256Header<GetMyEventsResponse>("/events/mine", {
+    method: "GET",
+    credentials: "include",
   });
-  return response.data;
 };
 
 export const getFollowingEvents = async (): Promise<GetFollowingEventsResponse> => {
-  const response = await axiosInstance.get<GetFollowingEventsResponse>("/events/following", {
-    withCredentials: true,
+  return fetchWithSHA256Header<GetFollowingEventsResponse>("/events/following", {
+    method: "GET",
+    credentials: "include",
   });
-  return response.data;
 };
 
 export const getGuestAttendanceStatus = async (
   eventId: string,
   start: string,
 ): Promise<GetGuestAttendanceStatusResponse> => {
-  const response = await axiosInstance.get<GetGuestAttendanceStatusResponse>(
-    `/events/attend/status/${eventId}/${start}`,
-    {
-      withCredentials: true,
-    },
-  );
-  return response.data;
+  return fetchWithSHA256Header<GetGuestAttendanceStatusResponse>(`/events/attend/status/${eventId}/${start}`, {
+    method: "GET",
+    credentials: "include",
+  });
 };
 
 export const getAttendanceTimeForecasts = async (): Promise<GetAttendanceTimeForecastsResponse> => {
-  const response = await axiosInstance.get<GetAttendanceTimeForecastsResponse>(`/events/attend/forecast`, {
-    withCredentials: true,
+  return fetchWithSHA256Header<GetAttendanceTimeForecastsResponse>(`/events/attend/forecast`, {
+    method: "GET",
+    credentials: "include",
   });
-  return response.data;
 };
