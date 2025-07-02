@@ -35,7 +35,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Framework**: Next.js 15.3.1 with React 19
 - **Styling**: Tailwind CSS 4 with shadcn/ui components
 - **Forms**: React Hook Form with Zod validation
-- **HTTP Client**: Axios with AWS Signature V4 interceptors
+- **HTTP Client**: Native fetch with AWS Signature V4 SHA256 headers
 - **Calendar**: FullCalendar with RRULE support
 - **Date Handling**: date-fns with timezone support
 
@@ -49,6 +49,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `templates/` - Layout templates (DialogTemplate)
 - `src/lib/` - Utilities and API layer:
   - `api/` - API clients with DTOs for type safety
+  - `utils/fetch.ts` - Custom fetch wrapper with SHA256 header support
   - `utils/aws-sig-v4/` - AWS Signature V4 implementation for API authentication
   - `types/` - TypeScript type definitions organized by domain
 - `src/styles/` - Global CSS styles
@@ -63,8 +64,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### API Integration
 
 - Backend API URL configured via `BACKEND_API_URL` environment variable
-- AWS Signature V4 authentication implemented in axios interceptors
+- AWS Signature V4 authentication implemented via SHA256 headers in fetch wrapper
 - API clients organized by domain (accounts, auth, events) with corresponding DTOs
+- Custom `fetchWithSHA256Header` utility automatically adds required headers for POST/PUT requests
 
 ### Code Conventions
 
