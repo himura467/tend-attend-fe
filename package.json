@@ -1,7 +1,6 @@
 {
   "name": "tend-attend-fe",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "next dev --turbopack",
@@ -13,6 +12,7 @@
     "lint-fix:prettier": "prettier --cache --write .",
     "ci:lint": "run-s lint:eslint lint:prettier"
   },
+  "packageManager": "pnpm@10.12.4",
   "dependencies": {
     "@date-fns/tz": "^1.2.0",
     "@fullcalendar/core": "^6.1.17",
