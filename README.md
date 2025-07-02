@@ -15,7 +15,7 @@ Tend Attend is an intuitive event management tool with predictive analytics capa
 - **Framework**: Next.js 15.3.1 with React 19
 - **Styling**: Tailwind CSS 4 with shadcn/ui components
 - **Forms**: React Hook Form with Zod validation
-- **HTTP Client**: Axios with AWS Signature V4 authentication
+- **HTTP Client**: Native fetch with AWS Signature V4 SHA256 headers
 - **Calendar**: FullCalendar with RRULE support for recurring events
 - **Date Handling**: date-fns with timezone support
 
